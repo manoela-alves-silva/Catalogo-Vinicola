@@ -1,5 +1,5 @@
 // Câmera percorrendo o vinhedo por uma CatmullRomCurve3 controlada pela rolagem,
-// céu do amanhecer ao pôr do sol, textos das etapas e barra de progresso.
+// textos das etapas e barra de progresso. (O céu fica em ceu.js.)
 import * as THREE from 'three';
 import { mouse } from '../mouse.js';
 
@@ -38,49 +38,6 @@ export function lugaresDasEtapas(relevo) {
   });
 }
 
-// ---------- Céu: do amanhecer (0) ao pôr do sol (1) ----------
-const HORAS = [
-  { p: 0.0, ceu: '#d9b9a8', sol: '#ffc49e', intensidade: 1.2, elevacao: 6 },
-  { p: 0.2, ceu: '#c2d0cc', sol: '#fff0d8', intensidade: 2.1, elevacao: 30 },
-  { p: 0.45, ceu: '#c6d6d6', sol: '#ffffff', intensidade: 2.5, elevacao: 58 },
-  { p: 0.7, ceu: '#dfc89f', sol: '#ffdca6', intensidade: 2.1, elevacao: 26 },
-  { p: 0.88, ceu: '#d48b69', sol: '#ff9f66', intensidade: 1.5, elevacao: 8 },
-  { p: 1.0, ceu: '#5f4253', sol: '#d47a68', intensidade: 0.6, elevacao: 2 },
-];
-
-export function criarCeu(cena) {
-  const sol = new THREE.DirectionalLight('#ffffff', 2);
-  const ambiente = new THREE.HemisphereLight('#c6d6d6', '#4a5236', 0.6);
-  cena.add(sol, ambiente);
-  if (!cena.fog) cena.fog = new THREE.Fog('#c6d6d6', 18, 110);
-
-  const corCeu = new THREE.Color();
-  const corSol = new THREE.Color();
-
-  /** Ajusta céu, neblina e sol para a "hora do dia" p (0 a 1). */
-  return function atualizar(p) {
-    let i = 0;
-    while (i < HORAS.length - 2 && p > HORAS[i + 1].p) i++;
-    const a = HORAS[i];
-    const b = HORAS[i + 1];
-    const k = suave(a.p, b.p, p);
-
-    corCeu.lerpColors(new THREE.Color(a.ceu), new THREE.Color(b.ceu), k);
-    corSol.lerpColors(new THREE.Color(a.sol), new THREE.Color(b.sol), k);
-    cena.background.copy(corCeu);
-    cena.fog.color.copy(corCeu); // neblina da mesma cor do céu: o horizonte "some" nele
-    ambiente.color.copy(corCeu);
-    ambiente.intensity = 0.35 + a.intensidade * 0.12;
-
-    // o sol nasce a leste (+x), passa alto ao meio-dia e se põe a oeste (-x), sempre à frente
-    const elevacao = THREE.MathUtils.degToRad(a.elevacao + (b.elevacao - a.elevacao) * k);
-    const caminho = p * Math.PI;
-    sol.position.set(Math.cos(caminho) * 60 * Math.cos(elevacao), Math.sin(elevacao) * 60, -40);
-    sol.color.copy(corSol);
-    sol.intensity = a.intensidade + (b.intensidade - a.intensidade) * k;
-  };
-}
-
 /**
  * Liga a rolagem à câmera: prende a seção na tela (pin) e, enquanto ela está presa,
  * a rolagem vira o "progresso" do passeio (0 a 1).
@@ -94,6 +51,7 @@ export function criarTrajeto({ r, relevo, lugares, secao, atualizarCeu }) {
   let progresso = 0;  // progresso atual (persegue o alvo com suavidade)
   let etapaAtual = -1;
   const balanco = new THREE.Vector2(); // deslocamento da câmera pelo mouse
+  const foco = new THREE.Vector3();     // ponto 14 m à frente da câmera: onde a sombra é calculada
 
   gsap.set(textos, { autoAlpha: 0 }); // autoAlpha = opacity + visibility (some também do leitor de tela)
 
@@ -141,17 +99,19 @@ export function criarTrajeto({ r, relevo, lugares, secao, atualizarCeu }) {
 
     r.camera.position.copy(posicao);
     r.camera.lookAt(olhar);
+    r.camera.getWorldDirection(foco);
+    foco.multiplyScalar(14).add(posicao);
   }
 
   r.aCadaQuadro((delta) => {
     progresso += (alvo - progresso) * (1 - Math.exp(-SUAVIDADE_ROLAGEM * delta));
     posicionarCamera(progresso, delta);
-    atualizarCeu(progresso);
+    atualizarCeu(progresso, foco);
     if (barra) barra.style.transform = `scaleX(${progresso.toFixed(4)})`;
     trocarTexto(Math.min(ETAPAS.length - 1, Math.floor(progresso * ETAPAS.length)));
   });
 
   // primeiro quadro já na posição certa (sem "pulo" quando a seção aparece)
   posicionarCamera(0, 1);
-  atualizarCeu(0);
+  atualizarCeu(0, foco);
 }

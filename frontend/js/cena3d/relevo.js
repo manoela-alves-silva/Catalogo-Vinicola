@@ -17,7 +17,7 @@ function sorteio(x, z) {
   return s - Math.floor(s); // de 0 a 1
 }
 
-function ruido(x, z) {
+export function ruido(x, z) {
   const xi = Math.floor(x);
   const zi = Math.floor(z);
   const fx = x - xi;

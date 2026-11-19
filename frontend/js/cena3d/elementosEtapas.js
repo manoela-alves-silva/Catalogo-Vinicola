@@ -4,15 +4,16 @@
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 
-const mat =(cor, extra = {}) => new THREE.MeshStandardMaterial({ color: cor, flatShading: true, roughness: 0.85, ...extra });
+// Sombreamento liso por padrão; só a pedra fica facetada (combina com rocha de basalto)
+const mat = (cor, extra = {}) => new THREE.MeshStandardMaterial({ color: cor, roughness: 0.85, ...extra });
 const MATERIAIS = {
-  pedra: mat('#4d4f4b'),
+  pedra: mat('#4d4f4b', { flatShading: true }),
   madeira: mat('#8a6340'),
   madeiraClara: mat('#b08a5a'),
   vime: mat('#a3804f', { side: THREE.DoubleSide }),
   uva: mat('#4b1d3f', { roughness: 0.5 }),
   folha: mat('#4f7a3a'),
-  inox: mat('#c9ced3', { metalness: 0.85, roughness: 0.28, flatShading: false }),
+  inox: mat('#c9ced3', { metalness: 0.85, roughness: 0.28 }),
   aro: mat('#2d2a27', { metalness: 0.6, roughness: 0.4 }),
   vidro: mat('#1f3326', { roughness: 0.25 }),
   capsula: mat('#5b0f1e'),
@@ -29,7 +30,7 @@ function peca(grupo, geometria, material, [x, y, z], rotacao = [0, 0, 0]) {
 
 /** Cacho de uva: bolinhas em forma de cone, de cabeça para baixo. */
 function cacho(grupo, [x, y, z], tamanho = 1) {
-  const bago = new THREE.IcosahedronGeometry(0.09 * tamanho, 0);
+  const bago = new THREE.IcosahedronGeometry(0.09 * tamanho, 1);
   for (let camada = 0; camada < 4; camada++) {
     const raio = (0.16 - camada * 0.04) * tamanho;
     const quantos = 6 - camada;
@@ -54,16 +55,16 @@ const ELEMENTOS = {
     peca(g, poste, MATERIAIS.madeira, [1.4, 1.2, 0]);
     peca(g, new THREE.BoxGeometry(3.2, 0.14, 0.14), MATERIAIS.madeira, [0, 2.35, 0]);
     for (let i = 0; i < 6; i++) {
-      peca(g, new THREE.IcosahedronGeometry(0.45, 0), MATERIAIS.folha, [-1.25 + i * 0.5, 2.45, (i % 2) * 0.2 - 0.1]);
+      peca(g, new THREE.IcosahedronGeometry(0.45, 1), MATERIAIS.folha, [-1.25 + i * 0.5, 2.45, (i % 2) * 0.2 - 0.1]);
     }
     [-0.8, 0, 0.8].forEach((x) => cacho(g, [x, 2.05, 0.15], 1.6));
   },
 
   colheita(g) {
     // cestos de vime cheios de uva
-    const cesto = new THREE.CylinderGeometry(0.42, 0.32, 0.5, 9, 1, true);
-    const fundo = new THREE.CircleGeometry(0.32, 9);
-    const bago = new THREE.IcosahedronGeometry(0.13, 0);
+    const cesto = new THREE.CylinderGeometry(0.42, 0.32, 0.5, 16, 1, true);
+    const fundo = new THREE.CircleGeometry(0.32, 16);
+    const bago = new THREE.IcosahedronGeometry(0.13, 1);
     [[0, 0], [1.1, 0.4], [-1, 0.5], [0.4, 1.2]].forEach(([x, z]) => {
       peca(g, cesto, MATERIAIS.vime, [x, 0.25, z]);
       peca(g, fundo, MATERIAIS.vime, [x, 0.01, z], [-Math.PI / 2, 0, 0]);
@@ -94,8 +95,8 @@ const ELEMENTOS = {
     // barris deitados: perfil "barrigudo" girado (o mesmo truque da garrafa), com aros escuros
     const perfil = [[0, -0.55], [0.4, -0.55], [0.47, -0.3], [0.5, 0], [0.47, 0.3], [0.4, 0.55], [0, 0.55]]
       .map(([r, y]) => new THREE.Vector2(r, y));
-    const barril = new THREE.LatheGeometry(perfil, 14);
-    const aro = new THREE.TorusGeometry(0.46, 0.025, 4, 16);
+    const barril = new THREE.LatheGeometry(perfil, 24);
+    const aro = new THREE.TorusGeometry(0.46, 0.025, 6, 24);
     const posicoes = [[-2.2, 0.5], [-1.1, 0.5], [0, 0.5], [1.1, 0.5], [2.2, 0.5], [-1.65, 1.38], [-0.55, 1.38], [0.55, 1.38], [1.65, 1.38]];
     posicoes.forEach(([x, y]) => {
       peca(g, barril, MATERIAIS.madeira, [x, y, 0], [Math.PI / 2, 0, 0]); // deitado: eixo apontando para a estrada
@@ -107,7 +108,7 @@ const ELEMENTOS = {
   engarrafamento(g) {
     // caixas de madeira com garrafas aparecendo por cima
     const caixa = new THREE.BoxGeometry(1.2, 0.55, 0.8);
-    const corpo = new THREE.CylinderGeometry(0.08, 0.08, 0.45, 8);
+    const corpo = new THREE.CylinderGeometry(0.08, 0.08, 0.45, 10);
     const gargalo = new THREE.CylinderGeometry(0.03, 0.04, 0.18, 6);
     [[-0.7, 0.275, 0], [0.7, 0.275, 0], [0, 0.825, 0], [1.6, 0.275, 0.9]].forEach(([x, y, z]) => {
       peca(g, caixa, MATERIAIS.madeiraClara, [x, y, z]);
@@ -127,7 +128,7 @@ const ELEMENTOS = {
  * Coloca os objetos das etapas nos lugares indicados.
  * @param {Array<{chave:string,x:number,z:number,angulo:number}>} lugares
  */
-export function criarElementosEtapas(relevo, lugares) {
+export function criarElementosEtapas(relevo, lugares, sombras = false) {
   const montagem = new THREE.Group();
   lugares.forEach(({ chave, x, z, angulo }) => {
     const elemento = new THREE.Group();
@@ -136,7 +137,9 @@ export function criarElementosEtapas(relevo, lugares) {
     elemento.rotation.y = angulo; // de frente para a estrada
     montagem.add(elemento);
   });
-  return juntarPorMaterial(montagem);
+  const grupo = juntarPorMaterial(montagem);
+  grupo.children.forEach((malha) => { malha.castShadow = sombras; malha.receiveShadow = sombras; });
+  return grupo;
 }
 
 /**

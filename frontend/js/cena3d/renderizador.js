@@ -32,6 +32,7 @@ function criarLuzes(cena) {
  * @param {Function} [opcoes.aoRedimensionar] chamada com a câmera sempre que o tamanho muda
  * @param {boolean} [opcoes.luzesDeEstudio] false = a cena traz a própria iluminação (ex.: sol)
  * @param {number} [opcoes.alcance] até que distância a câmera enxerga
+ * @param {boolean} [opcoes.sombras] liga o mapa de sombras (custa uma renderização extra por quadro)
  */
 export function criarRenderizador(canvas, {
   qualidade,
@@ -41,6 +42,7 @@ export function criarRenderizador(canvas, {
   aoRedimensionar,
   luzesDeEstudio = true,
   alcance = 100,
+  sombras = false,
 }) {
   const renderer = new THREE.WebGLRenderer({
     canvas,
@@ -49,6 +51,8 @@ export function criarRenderizador(canvas, {
   });
   renderer.toneMapping = THREE.ACESFilmicToneMapping; // cores e brilhos com cara de foto
   renderer.toneMappingExposure = 1;
+  renderer.shadowMap.enabled = sombras;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap; // bordas da sombra suaves
   // pixelRatio no máximo 2 (telas 3x gastariam 2,25x mais GPU sem diferença visível)
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, qualidade === 'alto' ? 2 : 1.5));
 
