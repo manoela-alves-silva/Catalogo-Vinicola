@@ -55,12 +55,6 @@ final class Vinho implements JsonSerializable
         );
     }
 
-    /** Diz se um texto é um tipo de vinho válido. */
-    public static function tipoValido(string $tipo): bool
-    {
-        return in_array($tipo, self::TIPOS, true);
-    }
-
     /** Volta para o formato do JSON (snake_case), usado pelo json_encode. */
     public function jsonSerialize(): array
     {

@@ -28,14 +28,14 @@ final class Catalogo
     {
         $vinhos = $this->todos();
 
-        if ($tipo !== null && $tipo !== '') {
-            $tipo = mb_strtolower($tipo);
-            if (!Vinho::tipoValido($tipo)) {
+        if ($tipo !== null && trim($tipo) !== '') {
+            $tipoOficial = $this->tipoOficial($tipo);
+            if ($tipoOficial === null) {
                 throw new InvalidArgumentException(
                     "Tipo inválido: \"$tipo\". Use um destes: " . implode(', ', Vinho::TIPOS) . '.'
                 );
             }
-            $vinhos = array_filter($vinhos, fn (Vinho $vinho) => $vinho->tipo === $tipo);
+            $vinhos = array_filter($vinhos, fn (Vinho $vinho) => $vinho->tipo === $tipoOficial);
         }
 
         if ($busca !== null && trim($busca) !== '') {
@@ -81,6 +81,21 @@ final class Catalogo
         return array_map(fn (array $item) => Vinho::criarDeArray($item), $itens);
     }
 
+    /**
+     * Converte o que veio na URL ("ROSE", "rosé", "Rose") para o tipo como
+     * está nos dados ("rosé"). Devolve null se não for um tipo conhecido.
+     */
+    private function tipoOficial(string $tipo): ?string
+    {
+        $procurado = $this->normalizar($tipo);
+        foreach (Vinho::TIPOS as $tipoValido) {
+            if ($this->normalizar($tipoValido) === $procurado) {
+                return $tipoValido;
+            }
+        }
+        return null;
+    }
+
     /** A busca olha nome, uva e descrição curta. */
     private function contemTermo(Vinho $vinho, string $termo): bool
     {
@@ -91,7 +106,7 @@ final class Catalogo
     /** Minúsculas e sem acento, para "rose" achar "Rosé". */
     private function normalizar(string $texto): string
     {
-        $semAcento = strtr(mb_strtolower(trim($texto)), [
+        return strtr(mb_strtolower(trim($texto)), [
             'á' => 'a', 'à' => 'a', 'â' => 'a', 'ã' => 'a', 'ä' => 'a',
             'é' => 'e', 'ê' => 'e', 'è' => 'e', 'ë' => 'e',
             'í' => 'i', 'î' => 'i', 'ì' => 'i', 'ï' => 'i',
@@ -99,6 +114,5 @@ final class Catalogo
             'ú' => 'u', 'û' => 'u', 'ù' => 'u', 'ü' => 'u',
             'ç' => 'c',
         ]);
-        return $semAcento;
     }
 }

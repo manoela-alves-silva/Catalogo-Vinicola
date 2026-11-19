@@ -1,1 +1,224 @@
-<!-- Página única do site: todas as seções (hero, manifesto, vinhedo, catálogo, harmonização, visita, rodapé). Preenchida na Etapa 2. -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- O main.js coloca o nome da vinícola na frente deste título. -->
+  <title>Vinhos de altitude da serra gaúcha</title>
+  <meta name="description" content="Vinícola fictícia da serra gaúcha: tintos, brancos, rosé, espumantes e vinho de sobremesa feitos com paciência, a 900 metros de altitude.">
+
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/componentes.css">
+  <link rel="stylesheet" href="css/animacoes.css">
+</head>
+<body>
+
+  <!-- ========== PRELOADER ========== -->
+  <div id="preloader" class="preloader" aria-hidden="true">
+    <svg class="preloader-taca" viewBox="0 0 60 100" width="60" height="100">
+      <path class="taca-contorno" d="M10 5 H50 C50 40 42 52 30 52 C18 52 10 40 10 5 Z M30 52 V90 M16 95 H44" fill="none" stroke="currentColor" stroke-width="2"/>
+      <rect class="taca-liquido" x="10" y="5" width="40" height="47"/>
+    </svg>
+    <p class="preloader-contador"><span id="preloader-numero">0</span>%</p>
+  </div>
+
+  <!-- ========== CABEÇALHO ========== -->
+  <header id="cabecalho" class="cabecalho">
+    <!-- O nome é preenchido pelo main.js; "Início" fica como texto reserva. -->
+    <a href="#inicio" class="cabecalho-logo" data-nome-vinicola>Início</a>
+
+    <button type="button" class="cabecalho-menu-botao" aria-label="Abrir menu" aria-expanded="false" aria-controls="menu-principal">
+      <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M3 8h18M3 16h18" stroke="currentColor" stroke-width="2"/></svg>
+    </button>
+
+    <nav id="menu-principal" class="menu-principal" aria-label="Navegação principal">
+      <ul>
+        <li><a href="#vinhedo">O vinhedo</a></li>
+        <li><a href="#vinhos">Os vinhos</a></li>
+        <li><a href="#harmonizacao">Harmonização</a></li>
+        <li><a href="#visite">Visite</a></li>
+      </ul>
+    </nav>
+
+    <a href="https://wa.me/5554900000000" class="botao botao-contorno cabecalho-whatsapp" target="_blank" rel="noopener">Fale com a gente</a>
+  </header>
+
+  <main>
+
+    <!-- ========== HERO ========== -->
+    <section id="inicio" class="hero">
+      <canvas id="canvas-garrafa" class="hero-canvas" aria-hidden="true"></canvas>
+
+      <!-- ÚNICO lugar com o nome da vinícola. Troque aqui e o resto se atualiza. -->
+      <h1 id="nome-vinicola" class="hero-titulo">Serra Rubra</h1>
+
+      <p class="hero-subtitulo">Vinhos de altitude da serra gaúcha. Desde 1998, uma safra de cada vez.</p>
+      <a href="#manifesto" class="hero-rolar">Role para descer</a>
+    </section>
+
+    <!-- ========== MANIFESTO ========== -->
+    <section id="manifesto" class="manifesto" aria-labelledby="manifesto-titulo">
+      <h2 id="manifesto-titulo" class="titulo-secao">Manifesto</h2>
+      <p class="manifesto-texto">
+        Fazemos vinho no alto da serra, onde a <em class="destaque">neblina</em> chega antes do sol.
+        Não seguimos receita: seguimos a <em class="destaque">safra</em>.
+        Cada garrafa guarda um ano inteiro de vento, chuva e <em class="destaque">paciência</em>,
+        e só sai daqui quando está pronta para ser aberta numa mesa cheia.
+      </p>
+    </section>
+
+    <!-- ========== DO VINHEDO À TAÇA ========== -->
+    <section id="vinhedo" class="vinhedo" aria-labelledby="vinhedo-titulo">
+      <canvas id="canvas-vinhedo" class="vinhedo-canvas" aria-hidden="true"></canvas>
+
+      <h2 id="vinhedo-titulo" class="titulo-secao">Do vinhedo à taça</h2>
+
+      <div class="vinhedo-progresso" aria-hidden="true">
+        <span class="vinhedo-progresso-barra"></span>
+      </div>
+
+      <ol class="vinhedo-etapas">
+        <li class="vinhedo-etapa" data-etapa="1">
+          <h3>Terroir</h3>
+          <p>Basalto, altitude e noites frias. O solo da serra dá aos nossos vinhos uma acidez viva e uma mineralidade que não se imita.</p>
+        </li>
+        <li class="vinhedo-etapa" data-etapa="2">
+          <h3>Videira</h3>
+          <p>Cada parreira é podada à mão. Menos cachos por planta, mais concentração em cada uva.</p>
+        </li>
+        <li class="vinhedo-etapa" data-etapa="3">
+          <h3>Colheita</h3>
+          <p>Colhemos de madrugada, em caixas pequenas, para a fruta chegar fresca e inteira à vinícola.</p>
+        </li>
+        <li class="vinhedo-etapa" data-etapa="4">
+          <h3>Fermentação</h3>
+          <p>Leveduras nativas e tanques com temperatura controlada. É aqui que o suco começa a virar vinho, sem pressa.</p>
+        </li>
+        <li class="vinhedo-etapa" data-etapa="5">
+          <h3>Barricas</h3>
+          <p>Os tintos de guarda descansam em carvalho francês de 12 a 24 meses, ganhando corpo e camadas.</p>
+        </li>
+        <li class="vinhedo-etapa" data-etapa="6">
+          <h3>Engarrafamento</h3>
+          <p>Rolha natural, rótulo aplicado à mão e mais alguns meses de repouso na adega antes de chegar até você.</p>
+        </li>
+      </ol>
+    </section>
+
+    <!-- ========== OS VINHOS (CATÁLOGO) ========== -->
+    <section id="vinhos" class="catalogo" aria-labelledby="catalogo-titulo">
+      <div class="catalogo-topo">
+        <h2 id="catalogo-titulo" class="titulo-secao">Os vinhos</h2>
+        <p class="catalogo-subtitulo">Dez rótulos, uma mesma serra.</p>
+      </div>
+
+      <div class="catalogo-filtros" role="group" aria-label="Filtrar vinhos por tipo">
+        <button type="button" class="filtro" data-tipo="" aria-pressed="true">Todos</button>
+        <button type="button" class="filtro" data-tipo="tinto" aria-pressed="false">Tintos</button>
+        <button type="button" class="filtro" data-tipo="branco" aria-pressed="false">Brancos</button>
+        <button type="button" class="filtro" data-tipo="rosé" aria-pressed="false">Rosé</button>
+        <button type="button" class="filtro" data-tipo="espumante" aria-pressed="false">Espumantes</button>
+        <button type="button" class="filtro" data-tipo="sobremesa" aria-pressed="false">Sobremesa</button>
+      </div>
+
+      <!-- Os cards são criados pelo catalogo.js com os dados da API. -->
+      <div id="catalogo-lista" class="catalogo-lista" aria-live="polite"></div>
+    </section>
+
+    <!-- ========== HARMONIZAÇÃO ========== -->
+    <section id="harmonizacao" class="harmonizacao" aria-labelledby="harmonizacao-titulo">
+      <h2 id="harmonizacao-titulo" class="titulo-secao">O que vai para a mesa hoje?</h2>
+      <p class="harmonizacao-subtitulo">Escolha o prato. A gente escolhe o vinho.</p>
+
+      <div class="harmonizacao-pratos" role="group" aria-label="Escolha um prato">
+        <button type="button" class="prato" data-prato="carne" aria-pressed="false">Carne</button>
+        <button type="button" class="prato" data-prato="peixe" aria-pressed="false">Peixe</button>
+        <button type="button" class="prato" data-prato="massa" aria-pressed="false">Massa</button>
+        <button type="button" class="prato" data-prato="queijos" aria-pressed="false">Queijos</button>
+        <button type="button" class="prato" data-prato="sobremesa" aria-pressed="false">Sobremesa</button>
+      </div>
+
+      <!-- O resultado é preenchido pelo JS; aria-live avisa leitores de tela da mudança. -->
+      <div id="harmonizacao-resultado" class="harmonizacao-resultado" aria-live="polite">
+        <p>Escolha um prato acima para ver nossas sugestões.</p>
+      </div>
+    </section>
+
+    <!-- ========== VISITE A VINÍCOLA ========== -->
+    <section id="visite" class="visite" aria-labelledby="visite-titulo">
+      <div class="marquee" aria-hidden="true">
+        <div class="marquee-trilho">
+          <span>Visite · Prove · Fique para o pôr do sol · </span>
+          <span>Visite · Prove · Fique para o pôr do sol · </span>
+          <span>Visite · Prove · Fique para o pôr do sol · </span>
+        </div>
+      </div>
+
+      <h2 id="visite-titulo" class="titulo-secao">Venha ver de perto</h2>
+      <p class="visite-texto">
+        Passeio a pé pelo vinhedo, visita à adega subterrânea e degustação guiada de cinco rótulos,
+        com queijos da serra. De quinta a domingo, sempre com reserva.
+      </p>
+      <a href="https://wa.me/5554900000000?text=Ol%C3%A1!%20Quero%20agendar%20uma%20visita." class="botao botao-cheio" target="_blank" rel="noopener">Agendar visita</a>
+
+      <div class="visite-fotos">
+        <figure class="visite-foto">
+          <img src="assets/img/visita-vinhedo.svg" alt="Fileiras de videiras subindo a encosta ao entardecer" width="800" height="1000" loading="lazy">
+        </figure>
+        <figure class="visite-foto">
+          <img src="assets/img/visita-adega.svg" alt="Barricas de carvalho enfileiradas na adega subterrânea" width="800" height="1000" loading="lazy">
+        </figure>
+        <figure class="visite-foto">
+          <img src="assets/img/visita-degustacao.svg" alt="Taças de vinho tinto e branco sobre a mesa da degustação" width="800" height="1000" loading="lazy">
+        </figure>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ========== RODAPÉ ========== -->
+  <footer id="rodape" class="rodape">
+    <p class="rodape-nome" aria-hidden="true" data-nome-vinicola></p>
+
+    <div class="rodape-colunas">
+      <div class="rodape-coluna">
+        <h2 class="rodape-titulo">Fale com a gente</h2>
+        <a href="https://wa.me/5554900000000" target="_blank" rel="noopener">WhatsApp (54) 90000-0000</a>
+      </div>
+      <div class="rodape-coluna">
+        <h2 class="rodape-titulo">Siga</h2>
+        <!-- Perfil fictício: o link não leva a lugar nenhum de propósito. -->
+        <a href="#">Instagram @serrarubra.vinhos</a>
+      </div>
+      <div class="rodape-coluna">
+        <h2 class="rodape-titulo">Onde estamos</h2>
+        <address>
+          Estrada da Linha Rubra, km 7<br>
+          Vale do Basalto, RS (endereço fictício)
+        </address>
+      </div>
+    </div>
+
+    <p class="rodape-legal">Projeto fictício de portfólio. Beba com moderação. Venda proibida para menores de 18 anos.</p>
+  </footer>
+
+  <!-- ========== SCRIPTS ========== -->
+  <!-- GSAP + plugins e Lenis (scripts clássicos, viram variáveis globais). -->
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.3.4/dist/lenis.min.js"></script>
+
+  <!-- Importmap: permite escrever `import * as THREE from "three"` nos módulos. -->
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+      }
+    }
+  </script>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
