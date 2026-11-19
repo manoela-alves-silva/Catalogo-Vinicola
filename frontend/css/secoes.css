@@ -12,6 +12,16 @@
   padding-bottom: var(--espaco-m);
 }
 
+/* Imagem que o JS coloca no lugar do canvas quando não há WebGL */
+.hero-garrafa-estatica {
+  position: absolute;
+  inset: 0;
+  z-index: var(--z-fundo);
+  height: 58%;
+  width: auto;
+  margin: auto; /* centraliza um elemento absoluto com altura definida */
+}
+
 .hero-titulo {
   width: 100%;
   font-size: var(--fs-gigante);

@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 320" width="240" height="640">
+  <!-- Garrafa estática: aparece no lugar do 3D quando o navegador não tem WebGL.
+       Gerada a partir do mesmo perfil de pontos usado no garrafa.js. -->
+  <defs>
+    <linearGradient id="vidro" x1="0" x2="1">
+      <stop offset="0" stop-color="#3a4d40"/><stop offset=".18" stop-color="#1f2b23"/>
+      <stop offset=".75" stop-color="#141d18"/><stop offset="1" stop-color="#4a5e50"/>
+    </linearGradient>
+    <linearGradient id="brilho" x1="0" x2="1">
+      <stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".35"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <path d="M97.0,315.0 L101.0,313.0 L102.5,307.0 L102.5,150.0 L102.2,141.2 L101.3,133.4 L99.9,126.6 L98.0,120.5 L95.9,115.0 L93.5,110.1 L90.9,105.5 L88.2,101.3 L85.5,97.1 L82.9,92.9 L80.4,88.5 L78.2,83.9 L76.4,78.9 L74.9,73.3 L73.9,67.1 L73.5,60.0 L73.0,20.0 L75.0,18.0 L75.2,7.0 L73.0,5.0 L47.0,5.0 L44.8,7.0 L45.0,18.0 L47.0,20.0 L46.5,60.0 L46.1,67.1 L45.1,73.3 L43.6,78.9 L41.8,83.9 L39.6,88.5 L37.1,92.9 L34.5,97.1 L31.8,101.3 L29.1,105.5 L26.5,110.1 L24.1,115.0 L22.0,120.5 L20.1,126.6 L18.7,133.4 L17.8,141.2 L17.5,150.0 L17.5,307.0 L19.0,313.0 L23.0,315.0 Z" fill="url(#vidro)"/>
+  <path d="M74.7,55.0 L74.2,20.0 L76.2,18.0 L76.4,7.0 L74.2,5.0 L45.8,5.0 L43.6,7.0 L43.8,18.0 L45.8,20.0 L45.3,55.0 Z" fill="#3A0D18"/>
+  <rect x="16.799999999999997" y="170.0" width="86.4" height="80" fill="#E9E1D3"/>
+  <rect x="16.799999999999997" y="178.0" width="86.4" height="1" fill="#14201A" opacity=".5"/>
+  <rect x="16.799999999999997" y="241.0" width="86.4" height="1" fill="#14201A" opacity=".5"/>
+  <rect x="30.0" y="150.0" width="5" height="150" fill="url(#brilho)" opacity=".6"/>
+</svg>
