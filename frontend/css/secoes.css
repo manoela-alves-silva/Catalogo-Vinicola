@@ -1,74 +1,5 @@
-/* Layout de cada seção: hero, manifesto, vinhedo, harmonização e visite.
-   (O catálogo tem arquivo próprio: catalogo.css.) */
-
-/* ---------- Hero ---------- */
-.hero {
-  /* Vão entre as palavras do nome, onde a garrafa 3D fica.
-     A câmera tem campo de visão VERTICAL fixo, então a garrafa sempre ocupa a mesma
-     fração da altura da tela. Por isso o vão é medido em svh e acompanha a garrafa.
-     - tela em pé (câmera a 12.5): garrafa com ~46% da altura → vão de 51svh
-     - tela deitada (câmera a 10): garrafa com ~16% de largura → vão de 24svh
-     Se mudar as distâncias em cenaHero.js, ajuste aqui na mesma proporção. */
-  --vao-garrafa: 51svh; /* celular: palavras acima e abaixo da garrafa */
-
-  display: grid;
-  align-items: end;
-  min-height: 100vh;  /* reserva para navegadores antigos */
-  min-height: 100svh; /* altura real do celular, sem contar a barra do navegador */
-  padding-top: calc(var(--altura-cabecalho) + var(--espaco-m));
-  padding-bottom: var(--espaco-m);
-}
-
-/* Imagem que o JS coloca no lugar do canvas quando não há WebGL */
-.hero-garrafa-estatica {
-  position: absolute;
-  inset: 0;
-  z-index: var(--z-fundo);
-  height: 58%;
-  width: auto;
-  margin: auto; /* centraliza um elemento absoluto com altura definida */
-}
-
-/* O nome ocupa o hero inteiro (como o canvas), então o centro dele é o centro da
-   garrafa. As palavras se afastam pelo "gap" e a garrafa fica no meio. */
-.hero-titulo {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: var(--vao-garrafa);
-  padding-inline: var(--margem-lateral);
-  /* em pé, também limita pela altura: celulares baixos ganham folga até o subtítulo */
-  font-size: min(var(--fs-nome-hero), 7svh);
-  line-height: 0.85;
-  pointer-events: none; /* não atrapalha o mouse que inclina a garrafa */
-}
-
-/* "Rubra" é vermelho: a última palavra do nome fica na cor vinho.
-   (Com JS, ela nasce creme e tinge depois de entrar.) */
-.hero-titulo > span:last-child:not(:first-child) {
-  color: var(--cor-vinho-claro);
-}
-
-/* Arrastar na horizontal gira a garrafa; na vertical continua rolando a página */
-.hero-canvas {
-  touch-action: pan-y;
-}
-
-.hero-subtitulo,
-.hero-rolar {
-  font-size: var(--fs-pequeno);
-  color: var(--cor-texto-suave);
-}
-
-.hero-rolar {
-  display: inline-block;
-  margin-top: var(--espaco-xs);
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-}
+/* Layout das seções mais simples: manifesto, harmonização e visite.
+   (Hero, vinhedo e catálogo têm arquivos próprios.) */
 
 /* ---------- Manifesto ---------- */
 .manifesto .etiqueta {
@@ -84,48 +15,6 @@
 /* Poucas palavras com a cor de destaque (usar o vinho com moderação) */
 .manifesto-texto .destaque {
   color: var(--cor-vinho-claro);
-}
-
-/* ---------- Do vinhedo à taça ---------- */
-.vinhedo-progresso {
-  height: 2px;
-  margin-bottom: var(--espaco-l);
-  background-color: var(--cor-linha);
-}
-
-.vinhedo-progresso-barra {
-  display: block;
-  width: 100%; /* sem JS, a barra aparece cheia; o JS controla depois */
-  height: 100%;
-  background-color: var(--cor-vinho-claro);
-  transform-origin: left;
-}
-
-.vinhedo-etapas {
-  display: grid;
-  gap: var(--espaco-l) var(--espaco-m);
-}
-
-.vinhedo-etapa {
-  padding-top: var(--espaco-s);
-  border-top: 1px solid var(--cor-linha);
-}
-
-/* Número da etapa ("01", "02"...) vindo do atributo data-etapa */
-.vinhedo-etapa::before {
-  content: '0' attr(data-etapa);
-  display: block;
-  margin-bottom: var(--espaco-s);
-  font-size: var(--fs-pequeno);
-  color: var(--cor-vinho-claro);
-}
-
-.vinhedo-etapa h3 {
-  margin-bottom: var(--espaco-xs);
-}
-
-.vinhedo-etapa p {
-  color: var(--cor-texto-suave);
 }
 
 /* ---------- Harmonização ---------- */
@@ -192,24 +81,7 @@
 }
 
 /* ---------- Telas médias (tablet) ---------- */
-/* Palavras dos lados da garrafa: em telas largas OU em qualquer tela deitada
-   (a mesma regra de "deitada" que o cenaHero.js usa para posicionar a câmera). */
-@media (min-width: 48em), (min-aspect-ratio: 1 / 1) {
-  .hero {
-    --vao-garrafa: 24svh;
-  }
-
-  .hero-titulo {
-    flex-direction: row;
-    font-size: var(--fs-nome-hero);
-  }
-}
-
 @media (min-width: 48em) {
-  .vinhedo-etapas {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
   .visite-fotos {
     grid-template-columns: repeat(3, 1fr);
     align-items: start;
@@ -225,23 +97,5 @@
 
   .visite-foto:nth-child(2) {
     margin-top: var(--espaco-l); /* fotos desencontradas, mais editorial */
-  }
-}
-
-/* ---------- Telas grandes (desktop) ---------- */
-@media (min-width: 64em) {
-  .hero-rodape {
-    display: flex;
-    justify-content: space-between;
-    align-items: end;
-    gap: var(--espaco-m);
-  }
-
-  .hero-rolar {
-    margin-top: 0;
-  }
-
-  .vinhedo-etapas {
-    grid-template-columns: repeat(3, 1fr);
   }
 }

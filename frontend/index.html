@@ -18,7 +18,9 @@
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/layout.css">
   <link rel="stylesheet" href="css/componentes.css">
+  <link rel="stylesheet" href="css/hero.css">
   <link rel="stylesheet" href="css/secoes.css">
+  <link rel="stylesheet" href="css/vinhedo.css">
   <link rel="stylesheet" href="css/catalogo.css">
   <link rel="stylesheet" href="css/animacoes.css">
 </head>
@@ -63,6 +65,24 @@
       <!-- ÚNICO lugar com o nome da vinícola. Troque aqui e o resto se atualiza.
            Uma palavra por <span>: a garrafa 3D fica entre elas. -->
       <h1 id="nome-vinicola" class="hero-titulo"><span>Serra</span> <span>Rubra</span></h1>
+
+      <!-- Ficha do vinho em destaque. Sem JS: uma linha simples. Com o 3D: cada item vira
+           uma anotação com linha fina presa a um ponto da garrafa (data-ancora).
+           O rótulo 3D lê o nome (data-vinho), a uva e a safra daqui. -->
+      <div class="hero-ficha" data-vinho="Pedra Lisa">
+        <p class="visualmente-oculto">Vinho em destaque: Pedra Lisa</p>
+        <dl class="hero-ficha-lista">
+          <div class="hero-anotacao" data-ancora="gargalo" data-lado="esquerda">
+            <dt>Safra</dt><dd data-campo="safra">2022</dd>
+          </div>
+          <div class="hero-anotacao" data-ancora="ombro" data-lado="direita">
+            <dt>Uva</dt><dd data-campo="uva">Marselan</dd>
+          </div>
+          <div class="hero-anotacao" data-ancora="base" data-lado="esquerda">
+            <dt>Teor</dt><dd data-campo="teor">13,5%</dd>
+          </div>
+        </dl>
+      </div>
 
       <div class="hero-rodape">
         <p class="hero-subtitulo">Vinhos de altitude da serra gaúcha. Desde 1998, uma safra de cada vez.</p>

@@ -110,6 +110,16 @@ address {
   outline-offset: 3px;
 }
 
+/* Some da tela, mas continua sendo lido por leitores de tela */
+.visualmente-oculto {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
 ::selection {
   background-color: var(--cor-vinho);
   color: var(--cor-creme);

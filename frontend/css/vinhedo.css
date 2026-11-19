@@ -1,0 +1,55 @@
+/* Seção "Do vinhedo à taça": cena 3D presa na tela, textos das etapas e barra de progresso. */
+
+/* ---------- Do vinhedo à taça ---------- */
+.vinhedo-progresso {
+  height: 2px;
+  margin-bottom: var(--espaco-l);
+  background-color: var(--cor-linha);
+}
+
+.vinhedo-progresso-barra {
+  display: block;
+  width: 100%; /* sem JS, a barra aparece cheia; o JS controla depois */
+  height: 100%;
+  background-color: var(--cor-vinho-claro);
+  transform-origin: left;
+}
+
+.vinhedo-etapas {
+  display: grid;
+  gap: var(--espaco-l) var(--espaco-m);
+}
+
+.vinhedo-etapa {
+  padding-top: var(--espaco-s);
+  border-top: 1px solid var(--cor-linha);
+}
+
+/* Número da etapa ("01", "02"...) vindo do atributo data-etapa */
+.vinhedo-etapa::before {
+  content: '0' attr(data-etapa);
+  display: block;
+  margin-bottom: var(--espaco-s);
+  font-size: var(--fs-pequeno);
+  color: var(--cor-vinho-claro);
+}
+
+.vinhedo-etapa h3 {
+  margin-bottom: var(--espaco-xs);
+}
+
+.vinhedo-etapa p {
+  color: var(--cor-texto-suave);
+}
+
+@media (min-width: 48em) {
+  .vinhedo-etapas {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 64em) {
+  .vinhedo-etapas {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

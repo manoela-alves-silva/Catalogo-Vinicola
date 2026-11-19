@@ -1,0 +1,171 @@
+/* Hero: nome da vinícola com a garrafa 3D no meio, ficha do vinho em destaque e rodapé do hero. */
+
+/* ---------- Hero ---------- */
+.hero {
+  /* Vão entre as palavras do nome, onde a garrafa 3D fica.
+     A câmera tem campo de visão VERTICAL fixo, então a garrafa sempre ocupa a mesma
+     fração da altura da tela. Por isso o vão é medido em svh e acompanha a garrafa.
+     - tela em pé (câmera a 12.5): garrafa com ~46% da altura → vão de 51svh
+     - tela deitada (câmera a 10): garrafa com ~16% de largura → vão de 24svh
+     Se mudar as distâncias em cenaHero.js, ajuste aqui na mesma proporção. */
+  --vao-garrafa: 51svh; /* celular: palavras acima e abaixo da garrafa */
+
+  display: grid;
+  align-content: end; /* ficha e rodapé do hero ficam juntos, no pé da tela */
+  min-height: 100vh;  /* reserva para navegadores antigos */
+  min-height: 100svh; /* altura real do celular, sem contar a barra do navegador */
+  padding-top: calc(var(--altura-cabecalho) + var(--espaco-m));
+  padding-bottom: var(--espaco-m);
+}
+
+/* Imagem que o JS coloca no lugar do canvas quando não há WebGL */
+.hero-garrafa-estatica {
+  position: absolute;
+  inset: 0;
+  z-index: var(--z-fundo);
+  height: 58%;
+  width: auto;
+  margin: auto; /* centraliza um elemento absoluto com altura definida */
+}
+
+/* O nome ocupa o hero inteiro (como o canvas), então o centro dele é o centro da
+   garrafa. As palavras se afastam pelo "gap" e a garrafa fica no meio. */
+.hero-titulo {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--vao-garrafa);
+  padding-inline: var(--margem-lateral);
+  /* em pé, também limita pela altura: celulares baixos ganham folga até o subtítulo */
+  font-size: min(var(--fs-nome-hero), 7svh);
+  line-height: 0.85;
+  pointer-events: none; /* não atrapalha o mouse que inclina a garrafa */
+}
+
+/* "Rubra" é vermelho: a última palavra do nome fica na cor vinho.
+   (Com JS, ela nasce creme e tinge depois de entrar.) */
+.hero-titulo > span:last-child:not(:first-child) {
+  color: var(--cor-vinho-claro);
+}
+
+/* ---------- Ficha do vinho em destaque ---------- */
+/* Sem JS (ou sem 3D): uma linha discreta acima do rodapé do hero */
+.hero-ficha-lista {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--espaco-xs) var(--espaco-m);
+  margin-bottom: var(--espaco-m);
+  font-size: var(--fs-pequeno);
+}
+
+.hero-anotacao {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  white-space: nowrap;
+}
+
+.hero-anotacao dt {
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--cor-texto-suave);
+}
+
+.hero-anotacao dd {
+  margin: 0;
+}
+
+/* Com o 3D: cada item é posicionado pelo JS (transform) sobre um ponto da garrafa.
+   Ordem visual: texto → linha → ponto (à esquerda) ou ponto → linha → texto (à direita). */
+.hero-ficha.ancorada .hero-anotacao {
+  --linha-anotacao: clamp(0.75rem, -0.5rem + 5vw, 4.5rem); /* curta no celular */
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+
+.hero-ficha.ancorada .hero-anotacao::before,
+.hero-ficha.ancorada .hero-anotacao::after {
+  content: '';
+  flex-shrink: 0;
+}
+
+.hero-ficha.ancorada .hero-anotacao::before { /* linha fina */
+  order: 2;
+  width: var(--linha-anotacao);
+  height: 1px;
+  background-color: rgb(237 230 216 / 0.4);
+}
+
+.hero-ficha.ancorada .hero-anotacao::after { /* ponto sobre a garrafa */
+  order: 3;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background-color: var(--cor-creme);
+}
+
+.hero-ficha.ancorada .hero-anotacao[data-lado='direita']::after { order: 0; }
+.hero-ficha.ancorada .hero-anotacao[data-lado='direita']::before { order: 1; }
+.hero-ficha.ancorada .hero-anotacao[data-lado='direita'] dt { order: 2; }
+.hero-ficha.ancorada .hero-anotacao[data-lado='direita'] dd { order: 3; }
+
+/* Arrastar na horizontal gira a garrafa; na vertical continua rolando a página */
+.hero-canvas {
+  touch-action: pan-y;
+}
+
+.hero-subtitulo,
+.hero-rolar {
+  font-size: var(--fs-pequeno);
+  color: var(--cor-texto-suave);
+}
+
+.hero-rolar {
+  display: inline-block;
+  margin-top: var(--espaco-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+/* ---------- Palavras dos lados da garrafa ---------- */
+/* Em telas largas OU em qualquer tela deitada
+   (a mesma regra de "deitada" que o cenaHero.js usa para posicionar a câmera). */
+@media (min-width: 48em), (min-aspect-ratio: 1 / 1) {
+  .hero {
+    --vao-garrafa: 24svh;
+  }
+
+  .hero-titulo {
+    flex-direction: row;
+    font-size: var(--fs-nome-hero);
+  }
+}
+
+/* Celular deitado (tela bem baixa): a garrafa ocupa quase toda a altura e o subtítulo
+   passaria por cima dela. Fica só o "Role para descer". */
+@media (max-height: 31.25em) and (min-aspect-ratio: 1 / 1) {
+  .hero-subtitulo {
+    display: none;
+  }
+}
+
+/* ---------- Telas grandes (desktop) ---------- */
+@media (min-width: 64em) {
+  .hero-rodape {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    gap: var(--espaco-m);
+  }
+
+  .hero-rolar {
+    margin-top: 0;
+  }
+}
