@@ -7,6 +7,8 @@
   <title>Vinhos de altitude da serra gaúcha</title>
   <meta name="description" content="Vinícola fictícia da serra gaúcha: tintos, brancos, rosé, espumantes e vinho de sobremesa feitos com paciência, a 900 metros de altitude.">
 
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+
   <!-- Fontes do Fontshare: um link por família (a URL combinada só traz a primeira). -->
   <link rel="preconnect" href="https://api.fontshare.com">
   <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
@@ -139,7 +141,7 @@
 
     <!-- Painel com a ficha completa. Fica escondido até o JS adicionar a classe "aberto". -->
     <div class="painel-fundo" data-fechar-painel></div>
-    <aside id="painel-vinho" class="painel-vinho" role="dialog" aria-modal="true" aria-labelledby="painel-vinho-nome">
+    <aside id="painel-vinho" class="painel-vinho" data-lenis-prevent role="dialog" aria-modal="true" aria-labelledby="painel-vinho-nome">
       <button type="button" class="painel-vinho-fechar" aria-label="Fechar ficha do vinho" data-fechar-painel>
         <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19" stroke="currentColor" stroke-width="2"/></svg>
       </button>

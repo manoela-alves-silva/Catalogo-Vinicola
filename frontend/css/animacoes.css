@@ -1,7 +1,34 @@
 /* Estados iniciais das animações, keyframes e regras de prefers-reduced-motion.
-   Por enquanto (Etapa 3) só o bloco de movimento reduzido. As animações entram na Etapa 4. */
+   Os estados "escondidos" NÃO ficam aqui: quem aplica é o JS (gsap.set / fromTo),
+   para o conteúdo continuar visível se o JavaScript falhar. */
 
-/* Quem pediu menos movimento no sistema operacional vê tudo parado e direto. */
+/* ---------- Lenis (regras recomendadas pela própria biblioteca) ---------- */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important; /* o Lenis já suaviza; dois suavizadores brigariam */
+}
+
+.lenis.lenis-stopped {
+  overflow: clip;
+}
+
+/* Áreas com rolagem própria (ex.: painel do vinho) não passam a rolagem para a página */
+.lenis [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+/* ---------- Faixa de texto ---------- */
+.marquee-trilho {
+  will-change: transform; /* avisa o navegador: esse elemento vai se mover o tempo todo */
+}
+
+/* ---------- Movimento reduzido ---------- */
+/* Quem pediu menos movimento no sistema operacional vê tudo parado e direto.
+   (O JS também confere essa preferência e nem cria as animações.) */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -10,5 +37,9 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+
+  .marquee-trilho {
+    will-change: auto;
   }
 }

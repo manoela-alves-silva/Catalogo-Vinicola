@@ -23,7 +23,12 @@
   display: block;
 }
 
-.hero-titulo span:last-child:not(:first-child) {
+/* A última palavra vai para a direita. Dois casos:
+   - sem JS: o <span> é filho direto do <h1>;
+   - com SplitText: cada <span> fica dentro de uma <div> de linha (que traz text-align
+     no próprio style), então alinhamos o <span> de dentro da última linha. */
+.hero-titulo > span:last-child:not(:first-child),
+.hero-titulo > div:last-child:not(:first-child) span {
   text-align: right;
 }
 
