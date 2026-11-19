@@ -5,22 +5,26 @@
 // O SplitText já coloca aria-label no elemento original, para o leitor de tela
 // ler a frase inteira e não letra por letra.
 
-/** Nome da vinícola no hero: linhas sobem de baixo para cima ao abrir a página. */
+/**
+ * Nome da vinícola no hero: cada palavra sobe de baixo para cima ao abrir a página.
+ * Dividimos por palavras (e não por linhas) porque no desktop as duas palavras estão
+ * na MESMA linha, separadas pela garrafa; dividir por linha juntaria as duas numa div
+ * só e desmancharia o vão. Por palavra, cada uma continua dentro do seu <span>.
+ */
 function animarNomeHero() {
   const titulo = document.querySelector('#nome-vinicola');
   if (!titulo) return;
 
   SplitText.create(titulo, {
-    type: 'lines',
-    mask: 'lines',     // cada linha ganha uma "janela" que esconde o que está fora dela
-    autoSplit: true,   // refaz a divisão se a fonte carregar depois ou a tela mudar de tamanho
+    type: 'words',
+    mask: 'words',     // cada palavra ganha uma "janela" que esconde o que está fora dela
     onSplit: (divisao) =>
-      gsap.from(divisao.lines, {
+      gsap.from(divisao.words, {
         yPercent: 110,
         duration: 1.2,
         ease: 'expo.out',
-        stagger: 0.12,
-        delay: 0.2,
+        stagger: 0.15,
+        delay: 0.4,
       }),
   });
 }

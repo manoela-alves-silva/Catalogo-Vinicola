@@ -6,17 +6,37 @@ const VELOCIDADE_GIRO = 0.25;   // radianos por segundo (uma volta a cada ~25 s)
 const INCLINACAO_MAXIMA = 0.18; // radianos (~10°)
 const SUAVIDADE = 3;            // maior = segue o mouse mais rápido
 
+// O nome da vinícola já aparece dos dois lados da garrafa; o rótulo mostra o vinho de assinatura.
+// (No catálogo, cada garrafa recebe o nome do próprio vinho, vindo da API.)
+const ROTULO_HERO = { titulo: 'Pedra Lisa', subtitulo: 'Marselan · 2022' };
+
+// Distância da câmera. Em tela "em pé" (celular) a câmera se afasta e a garrafa fica
+// menor, sobrando espaço para as palavras acima e abaixo dela.
+// ATENÇÃO: o vão entre as palavras (--vao-garrafa, em secoes.css) depende destes
+// valores. Se mudar aqui, ajuste lá na mesma proporção.
+const DISTANCIA_PADRAO = 10;
+const DISTANCIA_EM_PE = 12.5;
+
+function posicionarCamera(camera) {
+  camera.position.z = camera.aspect < 1 ? DISTANCIA_EM_PE : DISTANCIA_PADRAO;
+}
+
 /**
  * Monta a cena da garrafa no canvas do hero.
  * Hierarquia:  subida (rolagem) → inclinacao (mouse) → garrafa (giro)
  * Cada movimento mora no seu próprio grupo, então eles nunca brigam entre si.
  */
-export function iniciarCenaHero({ canvas, qualidade, movimentoReduzido, nome, corFundo }) {
-  const r = criarRenderizador(canvas, { qualidade, corFundo, comLoop: !movimentoReduzido });
+export function iniciarCenaHero({ canvas, qualidade, movimentoReduzido, corFundo }) {
+  const r = criarRenderizador(canvas, {
+    qualidade,
+    corFundo,
+    comLoop: !movimentoReduzido,
+    aoRedimensionar: posicionarCamera,
+  });
   const { THREE } = r;
 
   const garrafa = criarGarrafa({
-    nome,
+    ...ROTULO_HERO,
     qualidade,
     anisotropia: r.renderer.capabilities.getMaxAnisotropy(),
   });

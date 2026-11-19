@@ -34,7 +34,7 @@ function mostrarImagemEstatica(canvas) {
  * Garrafa 3D do hero. Os módulos 3D são carregados com import() dinâmico:
  * se o Three.js não baixar, só o 3D falha (vira imagem); o resto do site segue normal.
  */
-async function iniciarGarrafaHero({ nome, movimentoReduzido }) {
+async function iniciarGarrafaHero({ movimentoReduzido }) {
   const canvas = document.querySelector('#canvas-garrafa');
   if (!canvas) return;
 
@@ -47,7 +47,6 @@ async function iniciarGarrafaHero({ nome, movimentoReduzido }) {
     const { iniciarCenaHero } = await import('./cena3d/cenaHero.js');
     iniciarCenaHero({
       canvas,
-      nome,
       movimentoReduzido,
       qualidade: detectarQualidade(),
       corFundo: getComputedStyle(document.documentElement).getPropertyValue('--cor-fundo').trim(),
@@ -60,7 +59,7 @@ async function iniciarGarrafaHero({ nome, movimentoReduzido }) {
 
 async function iniciar() {
   // 1. Conteúdo: funciona mesmo sem as bibliotecas
-  const nome = preencherNomeVinicola();
+  preencherNomeVinicola();
 
   // Se o CDN falhar, o site fica estático, mas inteiro e legível
   if (!window.gsap || !window.ScrollTrigger || !window.SplitText) {
@@ -86,7 +85,7 @@ async function iniciar() {
 
   // 7. 3D por último: é o mais pesado e não deve atrasar os textos.
   //    (Depois das fontes também porque o rótulo usa a Clash Display.)
-  await iniciarGarrafaHero({ nome, movimentoReduzido });
+  await iniciarGarrafaHero({ movimentoReduzido });
 
   // 8. Recalcula posições de todos os gatilhos com o layout final
   ScrollTrigger.refresh();

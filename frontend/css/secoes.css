@@ -3,9 +3,16 @@
 
 /* ---------- Hero ---------- */
 .hero {
+  /* Vão entre as palavras do nome, onde a garrafa 3D fica.
+     A câmera tem campo de visão VERTICAL fixo, então a garrafa sempre ocupa a mesma
+     fração da altura da tela. Por isso o vão é medido em svh e acompanha a garrafa.
+     - tela em pé (câmera a 12.5): garrafa com ~46% da altura → vão de 51svh
+     - tela deitada (câmera a 10): garrafa com ~16% de largura → vão de 24svh
+     Se mudar as distâncias em cenaHero.js, ajuste aqui na mesma proporção. */
+  --vao-garrafa: 51svh; /* celular: palavras acima e abaixo da garrafa */
+
   display: grid;
-  grid-template-rows: 1fr auto;
-  align-items: center;
+  align-items: end;
   min-height: 100vh;  /* reserva para navegadores antigos */
   min-height: 100svh; /* altura real do celular, sem contar a barra do navegador */
   padding-top: calc(var(--altura-cabecalho) + var(--espaco-m));
@@ -22,24 +29,21 @@
   margin: auto; /* centraliza um elemento absoluto com altura definida */
 }
 
+/* O nome ocupa o hero inteiro (como o canvas), então o centro dele é o centro da
+   garrafa. As palavras se afastam pelo "gap" e a garrafa fica no meio. */
 .hero-titulo {
-  width: 100%;
-  font-size: var(--fs-gigante);
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--vao-garrafa);
+  padding-inline: var(--margem-lateral);
+  /* em pé, também limita pela altura: celulares baixos ganham folga até o subtítulo */
+  font-size: min(var(--fs-nome-hero), 7svh);
   line-height: 0.85;
-}
-
-/* Cada palavra numa linha; a última encosta na direita, abrindo espaço para a garrafa */
-.hero-titulo span {
-  display: block;
-}
-
-/* A última palavra vai para a direita. Dois casos:
-   - sem JS: o <span> é filho direto do <h1>;
-   - com SplitText: cada <span> fica dentro de uma <div> de linha (que traz text-align
-     no próprio style), então alinhamos o <span> de dentro da última linha. */
-.hero-titulo > span:last-child:not(:first-child),
-.hero-titulo > div:last-child:not(:first-child) span {
-  text-align: right;
+  pointer-events: none; /* não atrapalha o mouse que inclina a garrafa */
 }
 
 .hero-subtitulo,
@@ -157,6 +161,10 @@
   margin-top: var(--espaco-l);
 }
 
+.visite-foto {
+  overflow: clip; /* o zoom da revelação (scale) nunca passa da moldura */
+}
+
 .visite-foto:first-child {
   grid-column: 1 / -1;
 }
@@ -173,6 +181,19 @@
 }
 
 /* ---------- Telas médias (tablet) ---------- */
+/* Palavras dos lados da garrafa: em telas largas OU em qualquer tela deitada
+   (a mesma regra de "deitada" que o cenaHero.js usa para posicionar a câmera). */
+@media (min-width: 48em), (min-aspect-ratio: 1 / 1) {
+  .hero {
+    --vao-garrafa: 24svh;
+  }
+
+  .hero-titulo {
+    flex-direction: row;
+    font-size: var(--fs-nome-hero);
+  }
+}
+
 @media (min-width: 48em) {
   .vinhedo-etapas {
     grid-template-columns: repeat(2, 1fr);

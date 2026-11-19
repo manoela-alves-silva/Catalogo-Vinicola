@@ -71,7 +71,7 @@ function corDoTexto(corFundo) {
 }
 
 /** Desenha o rótulo num <canvas> 2D, que vira a textura do cilindro. */
-function desenharRotulo(canvas, { corRotulo, nome, subtitulo }) {
+function desenharRotulo(canvas, { corRotulo, titulo, subtitulo }) {
   const ctx = canvas.getContext('2d');
   const { width: L, height: A } = canvas;
   const corTexto = corDoTexto(corRotulo);
@@ -90,11 +90,11 @@ function desenharRotulo(canvas, { corRotulo, nome, subtitulo }) {
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
 
-  // nome da vinícola: ajusta o tamanho para caber na parte da frente (~1/6 da volta)
+  // título: ajusta o tamanho para caber na parte da frente (~1/6 da volta)
   const larguraMaxima = L * 0.16;
   let tamanho = 120;
   ctx.font = `600 ${tamanho}px "Clash Display", sans-serif`;
-  const linhas = nome.toUpperCase().split(' ');
+  const linhas = titulo.toUpperCase().split(' ');
   const maiorLinha = Math.max(...linhas.map((linha) => ctx.measureText(linha).width));
   tamanho = Math.min(tamanho, (tamanho * larguraMaxima) / maiorLinha);
   ctx.font = `600 ${tamanho}px "Clash Display", sans-serif`;
@@ -116,8 +116,8 @@ function desenharRotulo(canvas, { corRotulo, nome, subtitulo }) {
  * @returns {{ objeto: THREE.Group, trocarCores: Function, descartar: Function }}
  */
 export function criarGarrafa({
-  nome,
-  subtitulo = 'Serra Gaúcha · Brasil',
+  titulo,
+  subtitulo = '',
   corLiquido = '#5B0F1E',
   corRotulo = '#E9E1D3',
   corCapsula = '#3A0D18',
@@ -169,7 +169,7 @@ export function criarGarrafa({
   );
   rotulo.position.y = 1.05;
 
-  const textoRotulo = { corRotulo, nome, subtitulo };
+  const textoRotulo = { corRotulo, titulo, subtitulo };
   desenharRotulo(telaRotulo, textoRotulo);
 
   // Agrupa tudo e centraliza: o ponto de giro fica no meio da garrafa
@@ -182,12 +182,13 @@ export function criarGarrafa({
   return {
     objeto,
 
-    /** Troca as cores (e opcionalmente o subtítulo do rótulo). Usado pelo catálogo. */
-    trocarCores({ corLiquido: novoLiquido, corRotulo: novoRotulo, subtitulo: novoSubtitulo } = {}) {
+    /** Troca cores e textos do rótulo (o que não for passado continua igual). Usado pelo catálogo. */
+    trocarCores({ corLiquido: novoLiquido, corRotulo: novoRotulo, titulo: novoTitulo, subtitulo: novoSubtitulo } = {}) {
       if (novoLiquido) materialLiquido.color.set(novoLiquido);
       if (novoRotulo) textoRotulo.corRotulo = novoRotulo;
+      if (novoTitulo) textoRotulo.titulo = novoTitulo;
       if (novoSubtitulo) textoRotulo.subtitulo = novoSubtitulo;
-      if (novoRotulo || novoSubtitulo) {
+      if (novoRotulo || novoTitulo || novoSubtitulo) {
         desenharRotulo(telaRotulo, textoRotulo);
         textura.needsUpdate = true; // avisa o Three.js para reenviar a imagem à GPU
       }

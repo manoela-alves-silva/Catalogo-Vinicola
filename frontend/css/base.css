@@ -22,7 +22,7 @@
   --fs-destaque: clamp(1.5rem, 1rem + 2.4vw, 3.25rem);  /* manifesto */
   --fs-h3: clamp(1.5rem, 1.2rem + 1.4vw, 2.25rem);
   --fs-h2: clamp(2.75rem, 1.5rem + 6vw, 7rem);
-  --fs-gigante: clamp(3.5rem, 24vw, 18rem);           /* nome no hero */
+  --fs-nome-hero: clamp(3rem, 7vw, 7.5rem);           /* nome no hero, ao lado da garrafa */
 
   /* Espaçamentos fluidos */
   --espaco-xs: 0.5rem;

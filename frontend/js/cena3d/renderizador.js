@@ -29,8 +29,9 @@ function criarLuzes(cena) {
  * @param {string} opcoes.corFundo  mesma cor do fundo da página, para o canvas "sumir"
  * @param {number} [opcoes.campoDeVisao] graus da câmera (menor = mais "teleobjetiva")
  * @param {boolean} [opcoes.comLoop] false = sem animação: desenha só quando precisa
+ * @param {Function} [opcoes.aoRedimensionar] chamada com a câmera sempre que o tamanho muda
  */
-export function criarRenderizador(canvas, { qualidade, corFundo, campoDeVisao = 30, comLoop = true }) {
+export function criarRenderizador(canvas, { qualidade, corFundo, campoDeVisao = 30, comLoop = true, aoRedimensionar }) {
   const renderer = new THREE.WebGLRenderer({
     canvas,
     antialias: qualidade === 'alto',
@@ -87,6 +88,7 @@ export function criarRenderizador(canvas, { qualidade, corFundo, campoDeVisao = 
     if (!largura || !altura) return;
     renderer.setSize(largura, altura, false); // false = não mexe no CSS do canvas
     camera.aspect = largura / altura;
+    aoRedimensionar?.(camera);
     camera.updateProjectionMatrix();
     if (!rodando) renderer.render(cena, camera); // mantém a imagem certa mesmo pausado
   }
