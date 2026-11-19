@@ -30,8 +30,18 @@ function criarLuzes(cena) {
  * @param {number} [opcoes.campoDeVisao] graus da câmera (menor = mais "teleobjetiva")
  * @param {boolean} [opcoes.comLoop] false = sem animação: desenha só quando precisa
  * @param {Function} [opcoes.aoRedimensionar] chamada com a câmera sempre que o tamanho muda
+ * @param {boolean} [opcoes.luzesDeEstudio] false = a cena traz a própria iluminação (ex.: sol)
+ * @param {number} [opcoes.alcance] até que distância a câmera enxerga
  */
-export function criarRenderizador(canvas, { qualidade, corFundo, campoDeVisao = 30, comLoop = true, aoRedimensionar }) {
+export function criarRenderizador(canvas, {
+  qualidade,
+  corFundo,
+  campoDeVisao = 30,
+  comLoop = true,
+  aoRedimensionar,
+  luzesDeEstudio = true,
+  alcance = 100,
+}) {
   const renderer = new THREE.WebGLRenderer({
     canvas,
     antialias: qualidade === 'alto',
@@ -51,10 +61,10 @@ export function criarRenderizador(canvas, { qualidade, corFundo, campoDeVisao = 
   cena.environmentIntensity = 0.35; // fraco: só para o vidro ter onde refletir
   pmrem.dispose();
 
-  const camera = new THREE.PerspectiveCamera(campoDeVisao, 1, 0.1, 100);
+  const camera = new THREE.PerspectiveCamera(campoDeVisao, 1, 0.1, alcance);
   camera.position.set(0, 0, 10);
 
-  criarLuzes(cena);
+  if (luzesDeEstudio) criarLuzes(cena);
 
   // ---------- Loop ----------
   const atualizadores = []; // funções chamadas a cada quadro: (segundosDesdeUltimoQuadro, tempoTotal)

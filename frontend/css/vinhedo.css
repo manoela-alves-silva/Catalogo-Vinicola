@@ -1,6 +1,20 @@
-/* Seção "Do vinhedo à taça": cena 3D presa na tela, textos das etapas e barra de progresso. */
+/* Seção "Do vinhedo à taça".
+   Sem 3D (sem JS, sem WebGL ou com movimento reduzido): lista das 6 etapas com imagem.
+   Com 3D (classe .em-cena, colocada pelo JS): a seção vira uma "tela de cinema" presa,
+   com a cena ao fundo, a etapa atual em baixo e a barra de progresso. */
 
-/* ---------- Do vinhedo à taça ---------- */
+/* ---------- Lista (estado padrão) ---------- */
+.vinhedo:not(.em-cena) .vinhedo-canvas {
+  display: none; /* sem a cena 3D, o canvas vazio não tem o que fazer */
+}
+
+.vinhedo-imagem {
+  width: 100%;
+  height: auto;
+  margin-bottom: var(--espaco-l);
+  border-radius: var(--raio-card);
+}
+
 .vinhedo-progresso {
   height: 2px;
   margin-bottom: var(--espaco-l);
@@ -13,6 +27,10 @@
   height: 100%;
   background-color: var(--cor-vinho-claro);
   transform-origin: left;
+}
+
+.vinhedo-contador {
+  display: none; /* só faz sentido com a cena andando */
 }
 
 .vinhedo-etapas {
@@ -52,4 +70,97 @@
   .vinhedo-etapas {
     grid-template-columns: repeat(3, 1fr);
   }
+}
+
+/* ---------- Cena 3D (.em-cena) ---------- */
+.vinhedo.em-cena {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-rows: auto 1fr auto auto; /* título | (cena livre) | etapa + contador | barra */
+  height: 100vh;
+  height: 100svh;
+  padding-top: calc(var(--altura-cabecalho) + var(--espaco-s));
+  padding-bottom: var(--espaco-m);
+  overflow: clip;
+}
+
+/* Escurece o topo e a base para o texto creme ser legível sobre o céu claro.
+   ::after com z-index -1 fica acima do canvas (também -1, mas vem antes) e abaixo do texto. */
+.vinhedo.em-cena::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: var(--z-fundo);
+  pointer-events: none;
+  background: linear-gradient(
+    rgb(14 21 18 / 0.75),
+    rgb(14 21 18 / 0) 28%,
+    rgb(14 21 18 / 0) 50%,
+    rgb(14 21 18 / 0.85)
+  );
+}
+
+.vinhedo.em-cena .vinhedo-imagem {
+  display: none;
+}
+
+.vinhedo.em-cena .titulo-secao {
+  grid-column: 1 / -1;
+  margin: 0;
+  font-size: clamp(2rem, 1.2rem + 3vw, 4rem);
+}
+
+/* As 6 etapas ficam empilhadas no mesmo lugar; o JS mostra só a atual */
+.vinhedo.em-cena .vinhedo-etapas {
+  display: block;
+  position: relative;
+  grid-row: 3;
+  min-height: 11rem;
+}
+
+.vinhedo.em-cena .vinhedo-etapa {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  max-width: min(40rem, 100%);
+  padding: 0;
+  border: 0;
+}
+
+/* Tamanho pensado para "ENGARRAFAMENTO" (a palavra mais longa) caber inteira numa linha */
+.vinhedo.em-cena .vinhedo-etapa h3 {
+  font-size: clamp(1.75rem, 1.1rem + 2.6vw, 3.5rem);
+  overflow-wrap: normal;
+}
+
+.vinhedo.em-cena .vinhedo-etapa p {
+  color: var(--cor-creme);
+}
+
+.vinhedo.em-cena .vinhedo-contador {
+  display: block;
+  grid-row: 3;
+  grid-column: 2;
+  align-self: end;
+  font-family: var(--fonte-titulo);
+  font-size: var(--fs-pequeno);
+  letter-spacing: 0.08em;
+  color: var(--cor-texto-suave);
+}
+
+.vinhedo-contador-atual {
+  color: var(--cor-creme);
+}
+
+/* Barra dividida em 6 trechos, um por etapa (a máscara "corta" pequenos vãos) */
+.vinhedo.em-cena .vinhedo-progresso {
+  grid-row: 4;
+  grid-column: 1 / -1;
+  height: 3px;
+  margin: var(--espaco-m) 0 0;
+  mask: repeating-linear-gradient(90deg, #000 0 calc(100% / 6 - 4px), transparent 0 calc(100% / 6));
+}
+
+.vinhedo.em-cena .vinhedo-progresso-barra {
+  transform: scaleX(0);
 }
