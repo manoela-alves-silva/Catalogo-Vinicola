@@ -1,0 +1,200 @@
+/* Layout de cada seção: hero, manifesto, vinhedo, harmonização e visite.
+   (O catálogo tem arquivo próprio: catalogo.css.) */
+
+/* ---------- Hero ---------- */
+.hero {
+  display: grid;
+  grid-template-rows: 1fr auto;
+  align-items: center;
+  min-height: 100vh;  /* reserva para navegadores antigos */
+  min-height: 100svh; /* altura real do celular, sem contar a barra do navegador */
+  padding-top: calc(var(--altura-cabecalho) + var(--espaco-m));
+  padding-bottom: var(--espaco-m);
+}
+
+.hero-titulo {
+  width: 100%;
+  font-size: var(--fs-gigante);
+  line-height: 0.85;
+}
+
+/* Cada palavra numa linha; a última encosta na direita, abrindo espaço para a garrafa */
+.hero-titulo span {
+  display: block;
+}
+
+.hero-titulo span:last-child:not(:first-child) {
+  text-align: right;
+}
+
+.hero-subtitulo,
+.hero-rolar {
+  font-size: var(--fs-pequeno);
+  color: var(--cor-texto-suave);
+}
+
+.hero-rolar {
+  display: inline-block;
+  margin-top: var(--espaco-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+/* ---------- Manifesto ---------- */
+.manifesto .etiqueta {
+  margin-bottom: var(--espaco-m);
+}
+
+.manifesto-texto {
+  max-width: 28ch;
+  font-size: var(--fs-destaque);
+  line-height: 1.25;
+}
+
+/* Poucas palavras com a cor de destaque (usar o vinho com moderação) */
+.manifesto-texto .destaque {
+  color: var(--cor-vinho-claro);
+}
+
+/* ---------- Do vinhedo à taça ---------- */
+.vinhedo-progresso {
+  height: 2px;
+  margin-bottom: var(--espaco-l);
+  background-color: var(--cor-linha);
+}
+
+.vinhedo-progresso-barra {
+  display: block;
+  width: 100%; /* sem JS, a barra aparece cheia; o JS controla depois */
+  height: 100%;
+  background-color: var(--cor-vinho-claro);
+  transform-origin: left;
+}
+
+.vinhedo-etapas {
+  display: grid;
+  gap: var(--espaco-l) var(--espaco-m);
+}
+
+.vinhedo-etapa {
+  padding-top: var(--espaco-s);
+  border-top: 1px solid var(--cor-linha);
+}
+
+/* Número da etapa ("01", "02"...) vindo do atributo data-etapa */
+.vinhedo-etapa::before {
+  content: '0' attr(data-etapa);
+  display: block;
+  margin-bottom: var(--espaco-s);
+  font-size: var(--fs-pequeno);
+  color: var(--cor-vinho-claro);
+}
+
+.vinhedo-etapa h3 {
+  margin-bottom: var(--espaco-xs);
+}
+
+.vinhedo-etapa p {
+  color: var(--cor-texto-suave);
+}
+
+/* ---------- Harmonização ---------- */
+.harmonizacao {
+  text-align: center;
+}
+
+.harmonizacao .titulo-secao {
+  margin-bottom: var(--espaco-s);
+}
+
+.harmonizacao-subtitulo {
+  margin: 0 auto var(--espaco-m);
+  color: var(--cor-texto-suave);
+}
+
+.harmonizacao-pratos {
+  justify-content: center;
+}
+
+.harmonizacao-resultado {
+  display: grid;
+  place-items: center;
+  min-height: 12rem;
+  padding: var(--espaco-m);
+  border: 1px dashed var(--cor-linha);
+  border-radius: var(--raio-card);
+  color: var(--cor-texto-suave);
+}
+
+/* ---------- Visite ---------- */
+.visite {
+  overflow-x: clip;
+}
+
+.visite-texto {
+  margin-bottom: var(--espaco-m);
+}
+
+.visite-fotos {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--espaco-s);
+  margin-top: var(--espaco-l);
+}
+
+.visite-foto:first-child {
+  grid-column: 1 / -1;
+}
+
+.visite-foto img {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+}
+
+.visite-foto:first-child img {
+  aspect-ratio: 4 / 3;
+}
+
+/* ---------- Telas médias (tablet) ---------- */
+@media (min-width: 48em) {
+  .vinhedo-etapas {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .visite-fotos {
+    grid-template-columns: repeat(3, 1fr);
+    align-items: start;
+  }
+
+  .visite-foto:first-child {
+    grid-column: auto;
+  }
+
+  .visite-foto:first-child img {
+    aspect-ratio: 4 / 5;
+  }
+
+  .visite-foto:nth-child(2) {
+    margin-top: var(--espaco-l); /* fotos desencontradas, mais editorial */
+  }
+}
+
+/* ---------- Telas grandes (desktop) ---------- */
+@media (min-width: 64em) {
+  .hero-rodape {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    gap: var(--espaco-m);
+  }
+
+  .hero-rolar {
+    margin-top: 0;
+  }
+
+  .vinhedo-etapas {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

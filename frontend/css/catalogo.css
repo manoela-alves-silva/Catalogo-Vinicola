@@ -1,0 +1,230 @@
+/* Catálogo: lista de vinhos, card de vinho e painel lateral com a ficha. */
+
+/* ---------- Topo e lista ---------- */
+.catalogo-topo {
+  margin-bottom: var(--espaco-m);
+}
+
+.catalogo-topo .titulo-secao {
+  margin-bottom: var(--espaco-s);
+}
+
+.catalogo-subtitulo {
+  color: var(--cor-texto-suave);
+}
+
+/* Lista em linha com rolagem lateral: funciona no toque e sem JS */
+.catalogo-lista {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: min(78vw, 22rem);
+  gap: var(--espaco-m);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding-bottom: var(--espaco-s);
+  scrollbar-color: var(--cor-linha) transparent;
+}
+
+.catalogo-lista > * {
+  scroll-snap-align: start;
+}
+
+/* ---------- Card de vinho ----------
+   Modelo que o catalogo.js vai gerar:
+   <article class="card-vinho" style="--cor-liquido: #5B0F1E; --cor-rotulo: #E9E1D3">
+     <div class="card-vinho-garrafa" aria-hidden="true"></div>
+     <p class="card-vinho-selo">Destaque</p>            (só se destaque = true)
+     <p class="card-vinho-tipo">Tinto · 2022</p>
+     <h3 class="card-vinho-nome">Pedra Lisa Marselan</h3>
+     <p class="card-vinho-uva">Marselan</p>
+     <p class="card-vinho-preco">R$ 149,90</p>
+     <button class="card-vinho-botao botao botao-contorno">Ver ficha</button>
+   </article>
+*/
+.card-vinho {
+  --cor-liquido: var(--cor-vinho);
+  --cor-rotulo: var(--cor-creme);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--espaco-xs);
+  min-width: 0;
+  padding: var(--espaco-m);
+  border: 1px solid var(--cor-linha);
+  border-radius: var(--raio-card);
+  background-color: var(--cor-fundo-elevado);
+}
+
+/* Silhueta de garrafa em CSS (provisória até a garrafa 3D): gargalo, ombro e corpo */
+.card-vinho-garrafa {
+  position: relative;
+  height: 14rem;
+  margin-bottom: var(--espaco-s);
+}
+
+.card-vinho-garrafa::before,
+.card-vinho-garrafa::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  translate: -50% 0;
+  width: 4.5rem;
+}
+
+.card-vinho-garrafa::before {
+  top: 0;
+  height: 100%;
+  background:
+    linear-gradient(var(--cor-rotulo), var(--cor-rotulo)) 50% 72% / 100% 26% no-repeat, /* rótulo */
+    var(--cor-liquido);
+  clip-path: polygon(40% 0, 60% 0, 60% 28%, 100% 42%, 100% 100%, 0 100%, 0 42%, 40% 28%);
+}
+
+.card-vinho-garrafa::after {
+  /* brilho lateral, dá volume */
+  top: 42%;
+  height: 58%;
+  background: linear-gradient(90deg, rgb(255 255 255 / 0.14), transparent 35%);
+}
+
+.card-vinho-selo {
+  position: absolute;
+  top: var(--espaco-s);
+  right: var(--espaco-s);
+  padding: 0.2em 0.7em;
+  border-radius: var(--raio);
+  background-color: var(--cor-vinho);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.card-vinho-tipo,
+.card-vinho-uva {
+  font-size: var(--fs-pequeno);
+  color: var(--cor-texto-suave);
+}
+
+.card-vinho-tipo {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.card-vinho-nome {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.card-vinho-preco {
+  margin-top: auto;
+  padding-top: var(--espaco-s);
+  font-family: var(--fonte-titulo);
+  font-size: 1.25rem;
+}
+
+.card-vinho-botao {
+  align-self: start;
+}
+
+@media (hover: hover) {
+  .card-vinho:hover {
+    border-color: rgb(237 230 216 / 0.35);
+  }
+}
+
+/* ---------- Painel lateral do vinho (escondido por padrão) ---------- */
+.painel-fundo {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-painel);
+  background-color: rgb(14 21 18 / 0.7);
+  opacity: 0;
+  visibility: hidden;
+}
+
+.painel-vinho {
+  position: fixed;
+  inset: 0 0 0 auto;
+  z-index: var(--z-painel);
+  width: min(100%, 34rem);
+  height: 100dvh;
+  overflow-y: auto;
+  overscroll-behavior: contain; /* rolar o painel não rola a página atrás */
+  padding: max(var(--espaco-m), env(safe-area-inset-top)) var(--espaco-m)
+    max(var(--espaco-m), env(safe-area-inset-bottom));
+  background-color: var(--cor-fundo-elevado);
+  border-left: 1px solid var(--cor-linha);
+  /* fora da tela e invisível também para leitores de tela */
+  transform: translateX(100%);
+  visibility: hidden;
+}
+
+/* O JS só coloca a classe "aberto" no painel; o fundo reage sozinho via :has() */
+.painel-vinho.aberto {
+  transform: none;
+  visibility: visible;
+}
+
+.painel-fundo:has(+ .painel-vinho.aberto) {
+  opacity: 1;
+  visibility: visible;
+}
+
+.painel-vinho-fechar {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  margin-left: auto;
+  border: 1px solid var(--cor-linha);
+  border-radius: 50%;
+}
+
+.painel-vinho-canvas {
+  width: 100%;
+  height: 16rem;
+}
+
+.painel-vinho-tipo {
+  font-size: var(--fs-pequeno);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--cor-vinho-claro);
+}
+
+.painel-vinho-nome {
+  margin: var(--espaco-xs) 0 var(--espaco-s);
+  font-size: clamp(2rem, 1.5rem + 2vw, 3rem);
+}
+
+.painel-vinho-descricao,
+.painel-vinho-pratos {
+  color: var(--cor-texto-suave);
+}
+
+.painel-vinho-ficha {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--espaco-xs) var(--espaco-m);
+  margin: var(--espaco-m) 0;
+  padding-block: var(--espaco-s);
+  border-block: 1px solid var(--cor-linha);
+  font-size: var(--fs-pequeno);
+}
+
+.painel-vinho-ficha dt {
+  color: var(--cor-texto-suave);
+}
+
+.painel-vinho-ficha dd {
+  margin: 0;
+}
+
+.painel-vinho-subtitulo {
+  margin-bottom: var(--espaco-xs);
+  font-size: 1.125rem;
+}
+
+.painel-vinho-pratos {
+  margin-bottom: var(--espaco-m);
+}

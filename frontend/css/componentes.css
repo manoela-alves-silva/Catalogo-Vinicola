@@ -1,1 +1,107 @@
-/* Cards, botões, painel do vinho e filtros. */
+/* Peças reutilizáveis: botões, filtros/pratos e a faixa de texto (marquee). */
+
+/* ---------- Botões ---------- */
+.botao {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  min-height: 2.75rem; /* alvo de toque confortável */
+  padding: 0.6em 1.4em;
+  border: 1px solid transparent;
+  border-radius: var(--raio);
+  font-size: var(--fs-pequeno);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.botao-cheio {
+  background-color: var(--cor-vinho);
+  color: var(--cor-creme);
+}
+
+.botao-contorno {
+  border-color: var(--cor-linha);
+}
+
+/* Ícone de balão de conversa desenhado por máscara: herda a cor do texto */
+.botao-whatsapp::before {
+  content: '';
+  flex-shrink: 0;
+  width: 1.1em;
+  height: 1.1em;
+  background-color: currentColor;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 3a9 9 0 0 0-7.8 13.5L3 21l4.6-1.2A9 9 0 1 0 12 3z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+@media (hover: hover) {
+  .botao-cheio:hover {
+    background-color: var(--cor-vinho-claro);
+  }
+
+  .botao-contorno:hover {
+    border-color: var(--cor-creme);
+  }
+}
+
+/* ---------- Filtros do catálogo e pratos da harmonização ---------- */
+.catalogo-filtros,
+.harmonizacao-pratos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espaco-xs);
+  margin-bottom: var(--espaco-l);
+}
+
+.filtro,
+.prato {
+  min-height: 2.75rem;
+  padding: 0.5em 1.2em;
+  border: 1px solid var(--cor-linha);
+  border-radius: var(--raio);
+  font-size: var(--fs-pequeno);
+  color: var(--cor-texto-suave);
+}
+
+/* Botão selecionado: aria-pressed serve ao leitor de tela E ao visual */
+.filtro[aria-pressed='true'],
+.prato[aria-pressed='true'] {
+  background-color: var(--cor-creme);
+  border-color: var(--cor-creme);
+  color: var(--cor-fundo);
+}
+
+@media (hover: hover) {
+  .filtro:hover,
+  .prato:hover {
+    border-color: var(--cor-creme);
+    color: var(--cor-creme);
+  }
+
+  .filtro[aria-pressed='true']:hover,
+  .prato[aria-pressed='true']:hover {
+    color: var(--cor-fundo);
+  }
+}
+
+/* ---------- Faixa de texto (marquee) ---------- */
+.marquee {
+  margin-inline: calc(50% - 50vw); /* sai do padding da seção e vai de borda a borda da tela */
+  margin-bottom: var(--espaco-l);
+  overflow: clip;
+}
+
+.marquee-trilho {
+  display: flex;
+  width: max-content;
+  font-family: var(--fonte-titulo);
+  font-size: var(--fs-h2);
+  font-weight: 500;
+  line-height: 1;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--cor-texto-suave); /* letras vazadas, só o contorno */
+}

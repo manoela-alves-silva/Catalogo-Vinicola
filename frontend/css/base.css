@@ -1,1 +1,140 @@
 /* Reset, variáveis CSS (cores e fontes) e tipografia base. */
+
+/* ---------- Variáveis ---------- */
+:root {
+  /* Cores (contraste conferido sobre --cor-fundo) */
+  --cor-fundo: #0E1512;          /* quase preto esverdeado: folha de videira à noite */
+  --cor-fundo-elevado: #16211B;  /* cards, painel */
+  --cor-creme: #EDE6D8;          /* texto principal (contraste 14.9) */
+  --cor-texto-suave: #A9AB9C;    /* texto de apoio (7.9) */
+  --cor-vinho: #A8173B;          /* destaque: fundos de botão (creme sobre ele: 5.9) */
+  --cor-vinho-claro: #E2496A;    /* destaque usado como TEXTO sobre o fundo (4.75) */
+  --cor-videira: #8FA68A;        /* apoio (7.0) */
+  --cor-linha: rgb(237 230 216 / 0.14);
+
+  /* Fontes (carregadas do Fontshare no <head>) */
+  --fonte-titulo: 'Clash Display', 'Arial Narrow', sans-serif;
+  --fonte-texto: 'General Sans', system-ui, sans-serif;
+
+  /* Tamanhos fluidos: clamp(mínimo no celular, crescimento, máximo no desktop) */
+  --fs-pequeno: clamp(0.8125rem, 0.78rem + 0.15vw, 0.875rem);
+  --fs-corpo: clamp(1rem, 0.96rem + 0.2vw, 1.125rem);
+  --fs-destaque: clamp(1.5rem, 1rem + 2.4vw, 3.25rem);  /* manifesto */
+  --fs-h3: clamp(1.5rem, 1.2rem + 1.4vw, 2.25rem);
+  --fs-h2: clamp(2.75rem, 1.5rem + 6vw, 7rem);
+  --fs-gigante: clamp(3.5rem, 24vw, 18rem);           /* nome no hero */
+
+  /* Espaçamentos fluidos */
+  --espaco-xs: 0.5rem;
+  --espaco-s: 1rem;
+  --espaco-m: clamp(1.5rem, 1.2rem + 1.5vw, 2.5rem);
+  --espaco-l: clamp(3rem, 2rem + 5vw, 6rem);
+  --espaco-xl: clamp(6rem, 4rem + 10vw, 12rem);
+  --margem-lateral: clamp(1rem, 0.4rem + 3vw, 3rem);
+  --largura-max: 90rem;
+
+  /* Camadas (escala pequena e previsível de z-index) */
+  --z-fundo: -1;
+  --z-cabecalho: 10;
+  --z-painel: 20;
+  --z-preloader: 30;
+
+  --raio: 999px;      /* botões em pílula */
+  --raio-card: 4px;
+  --altura-cabecalho: 4.5rem;
+}
+
+/* ---------- Reset ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-padding-top: var(--altura-cabecalho); /* âncoras não ficam sob o header fixo */
+}
+
+body {
+  min-height: 100svh;
+  background-color: var(--cor-fundo);
+  color: var(--cor-creme);
+  font-family: var(--fonte-texto);
+  font-size: var(--fs-corpo);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip; /* corta sobras laterais sem quebrar position: sticky */
+}
+
+img,
+svg,
+canvas {
+  display: block;
+  max-width: 100%;
+}
+
+img {
+  height: auto;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+ul,
+ol {
+  list-style: none;
+  padding: 0;
+}
+
+address {
+  font-style: normal;
+}
+
+:focus-visible {
+  outline: 2px solid var(--cor-vinho-claro);
+  outline-offset: 3px;
+}
+
+::selection {
+  background-color: var(--cor-vinho);
+  color: var(--cor-creme);
+}
+
+/* ---------- Tipografia ---------- */
+h1,
+h2,
+h3 {
+  font-family: var(--fonte-titulo);
+  font-weight: 600;
+  line-height: 0.9;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  overflow-wrap: break-word;
+  text-wrap: balance; /* linhas de tamanho parecido, sem palavra sozinha no fim */
+}
+
+h3 {
+  font-size: var(--fs-h3);
+  font-weight: 500;
+  line-height: 1;
+}
+
+p {
+  max-width: 65ch;
+  text-wrap: pretty;
+}

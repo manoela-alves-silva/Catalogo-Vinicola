@@ -2,14 +2,22 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <!-- O main.js coloca o nome da vinícola na frente deste título. -->
   <title>Vinhos de altitude da serra gaúcha</title>
   <meta name="description" content="Vinícola fictícia da serra gaúcha: tintos, brancos, rosé, espumantes e vinho de sobremesa feitos com paciência, a 900 metros de altitude.">
 
+  <!-- Fontes do Fontshare: um link por família (a URL combinada só traz a primeira). -->
+  <link rel="preconnect" href="https://api.fontshare.com">
+  <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
+  <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=clash-display@500,600&amp;display=swap">
+  <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600&amp;display=swap">
+
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/layout.css">
   <link rel="stylesheet" href="css/componentes.css">
+  <link rel="stylesheet" href="css/secoes.css">
+  <link rel="stylesheet" href="css/catalogo.css">
   <link rel="stylesheet" href="css/animacoes.css">
 </head>
 <body>
@@ -41,7 +49,7 @@
       </ul>
     </nav>
 
-    <a href="https://wa.me/5554900000000" class="botao botao-contorno cabecalho-whatsapp" target="_blank" rel="noopener">Fale com a gente</a>
+    <a href="https://wa.me/5554900000000" class="botao botao-contorno botao-whatsapp cabecalho-whatsapp" target="_blank" rel="noopener"><span class="cabecalho-whatsapp-texto">Fale com a gente</span></a>
   </header>
 
   <main>
@@ -50,16 +58,19 @@
     <section id="inicio" class="hero">
       <canvas id="canvas-garrafa" class="hero-canvas" aria-hidden="true"></canvas>
 
-      <!-- ÚNICO lugar com o nome da vinícola. Troque aqui e o resto se atualiza. -->
-      <h1 id="nome-vinicola" class="hero-titulo">Serra Rubra</h1>
+      <!-- ÚNICO lugar com o nome da vinícola. Troque aqui e o resto se atualiza.
+           Uma palavra por <span>: cada uma vira uma linha do título. -->
+      <h1 id="nome-vinicola" class="hero-titulo"><span>Serra</span> <span>Rubra</span></h1>
 
-      <p class="hero-subtitulo">Vinhos de altitude da serra gaúcha. Desde 1998, uma safra de cada vez.</p>
-      <a href="#manifesto" class="hero-rolar">Role para descer</a>
+      <div class="hero-rodape">
+        <p class="hero-subtitulo">Vinhos de altitude da serra gaúcha. Desde 1998, uma safra de cada vez.</p>
+        <a href="#manifesto" class="hero-rolar">Role para descer</a>
+      </div>
     </section>
 
     <!-- ========== MANIFESTO ========== -->
     <section id="manifesto" class="manifesto" aria-labelledby="manifesto-titulo">
-      <h2 id="manifesto-titulo" class="titulo-secao">Manifesto</h2>
+      <h2 id="manifesto-titulo" class="etiqueta">Manifesto</h2>
       <p class="manifesto-texto">
         Fazemos vinho no alto da serra, onde a <em class="destaque">neblina</em> chega antes do sol.
         Não seguimos receita: seguimos a <em class="destaque">safra</em>.
@@ -126,6 +137,22 @@
       <div id="catalogo-lista" class="catalogo-lista" aria-live="polite"></div>
     </section>
 
+    <!-- Painel com a ficha completa. Fica escondido até o JS adicionar a classe "aberto". -->
+    <div class="painel-fundo" data-fechar-painel></div>
+    <aside id="painel-vinho" class="painel-vinho" role="dialog" aria-modal="true" aria-labelledby="painel-vinho-nome">
+      <button type="button" class="painel-vinho-fechar" aria-label="Fechar ficha do vinho" data-fechar-painel>
+        <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19" stroke="currentColor" stroke-width="2"/></svg>
+      </button>
+      <canvas id="canvas-garrafa-painel" class="painel-vinho-canvas" aria-hidden="true"></canvas>
+      <p class="painel-vinho-tipo" id="painel-vinho-tipo"></p>
+      <h2 class="painel-vinho-nome" id="painel-vinho-nome"></h2>
+      <p class="painel-vinho-descricao" id="painel-vinho-descricao"></p>
+      <dl class="painel-vinho-ficha" id="painel-vinho-ficha"></dl>
+      <h3 class="painel-vinho-subtitulo">Vai bem com</h3>
+      <ul class="painel-vinho-pratos" id="painel-vinho-pratos"></ul>
+      <a href="https://wa.me/5554900000000" class="botao botao-cheio botao-whatsapp" id="painel-vinho-whatsapp" target="_blank" rel="noopener">Quero este vinho</a>
+    </aside>
+
     <!-- ========== HARMONIZAÇÃO ========== -->
     <section id="harmonizacao" class="harmonizacao" aria-labelledby="harmonizacao-titulo">
       <h2 id="harmonizacao-titulo" class="titulo-secao">O que vai para a mesa hoje?</h2>
@@ -160,7 +187,7 @@
         Passeio a pé pelo vinhedo, visita à adega subterrânea e degustação guiada de cinco rótulos,
         com queijos da serra. De quinta a domingo, sempre com reserva.
       </p>
-      <a href="https://wa.me/5554900000000?text=Ol%C3%A1!%20Quero%20agendar%20uma%20visita." class="botao botao-cheio" target="_blank" rel="noopener">Agendar visita</a>
+      <a href="https://wa.me/5554900000000?text=Ol%C3%A1!%20Quero%20agendar%20uma%20visita." class="botao botao-cheio botao-whatsapp" target="_blank" rel="noopener">Agendar visita</a>
 
       <div class="visite-fotos">
         <figure class="visite-foto">
@@ -183,16 +210,16 @@
 
     <div class="rodape-colunas">
       <div class="rodape-coluna">
-        <h2 class="rodape-titulo">Fale com a gente</h2>
+        <h2 class="etiqueta">Fale com a gente</h2>
         <a href="https://wa.me/5554900000000" target="_blank" rel="noopener">WhatsApp (54) 90000-0000</a>
       </div>
       <div class="rodape-coluna">
-        <h2 class="rodape-titulo">Siga</h2>
+        <h2 class="etiqueta">Siga</h2>
         <!-- Perfil fictício: o link não leva a lugar nenhum de propósito. -->
         <a href="#">Instagram @serrarubra.vinhos</a>
       </div>
       <div class="rodape-coluna">
-        <h2 class="rodape-titulo">Onde estamos</h2>
+        <h2 class="etiqueta">Onde estamos</h2>
         <address>
           Estrada da Linha Rubra, km 7<br>
           Vale do Basalto, RS (endereço fictício)

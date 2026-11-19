@@ -1,1 +1,14 @@
-/* Estados iniciais das animações, keyframes e regras de prefers-reduced-motion. */
+/* Estados iniciais das animações, keyframes e regras de prefers-reduced-motion.
+   Por enquanto (Etapa 3) só o bloco de movimento reduzido. As animações entram na Etapa 4. */
+
+/* Quem pediu menos movimento no sistema operacional vê tudo parado e direto. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
