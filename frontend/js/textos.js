@@ -4,6 +4,7 @@
 // anima, então se o JS falhar o texto continua lá.
 // O SplitText já coloca aria-label no elemento original, para o leitor de tela
 // ler a frase inteira e não letra por letra.
+import { mouse } from './mouse.js';
 
 /**
  * Nome da vinícola no hero: cada palavra sobe de baixo para cima ao abrir a página.
@@ -15,18 +16,51 @@ function animarNomeHero() {
   const titulo = document.querySelector('#nome-vinicola');
   if (!titulo) return;
 
+  const palavraColorida = titulo.querySelector('span:last-child:not(:first-child)');
+  const creme = getComputedStyle(document.documentElement).getPropertyValue('--cor-creme').trim();
+
   SplitText.create(titulo, {
     type: 'words',
     mask: 'words',     // cada palavra ganha uma "janela" que esconde o que está fora dela
     onSplit: (divisao) =>
-      gsap.from(divisao.words, {
-        yPercent: 110,
-        duration: 1.2,
-        ease: 'expo.out',
-        stagger: 0.15,
-        delay: 0.4,
-      }),
+      gsap.timeline({ delay: 0.4 })
+        .from(divisao.words, { yPercent: 110, duration: 1.2, ease: 'expo.out', stagger: 0.15 })
+        // a última palavra nasce creme e "tinge" de vinho (a cor final vem do CSS)
+        .from(palavraColorida, { color: creme, duration: 1.4, ease: 'power2.inOut' }, '-=0.5'),
   });
+}
+
+/**
+ * Nome do hero vivo: as palavras acompanham o mouse em paralaxe (no sentido
+ * contrário ao da garrafa, o que dá sensação de camadas) e se afastam para os
+ * lados ao rolar, como uma cortina abrindo enquanto a garrafa sobe.
+ * Cada efeito usa uma propriedade diferente (x/y no mouse, xPercent na rolagem)
+ * para os dois se somarem sem um apagar o outro.
+ */
+function animarNomeVivo() {
+  const palavras = [...document.querySelectorAll('#nome-vinicola > span')];
+  if (palavras.length < 2) return;
+  const [primeira, ultima] = [palavras[0], palavras.at(-1)];
+
+  // Paralaxe: quickTo cria uma função que "persegue" o valor com suavidade
+  const seguidores = palavras.map((palavra, i) => ({
+    x: gsap.quickTo(palavra, 'x', { duration: 1.2, ease: 'power3.out' }),
+    y: gsap.quickTo(palavra, 'y', { duration: 1.2, ease: 'power3.out' }),
+    intensidade: 18 + i * 14, // a segunda palavra mexe mais: parece mais perto
+  }));
+  gsap.ticker.add(() => {
+    seguidores.forEach(({ x, y, intensidade }) => {
+      x(-mouse.x * intensidade);
+      y(-mouse.y * intensidade * 0.5);
+    });
+  });
+
+  // Rolagem: as palavras saem pelas laterais e apagam enquanto o hero sai da tela
+  gsap.timeline({
+    scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true },
+  })
+    .to(primeira, { xPercent: -60, opacity: 0, ease: 'none' }, 0)
+    .to(ultima, { xPercent: 60, opacity: 0, ease: 'none' }, 0);
 }
 
 /** Títulos das seções: letra por letra quando entram na tela. */
@@ -100,6 +134,7 @@ export function iniciarTextos({ movimentoReduzido }) {
   if (movimentoReduzido) return;
 
   animarNomeHero();
+  animarNomeVivo();
   animarTitulos();
   animarManifesto();
 }

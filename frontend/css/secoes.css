@@ -46,6 +46,17 @@
   pointer-events: none; /* não atrapalha o mouse que inclina a garrafa */
 }
 
+/* "Rubra" é vermelho: a última palavra do nome fica na cor vinho.
+   (Com JS, ela nasce creme e tinge depois de entrar.) */
+.hero-titulo > span:last-child:not(:first-child) {
+  color: var(--cor-vinho-claro);
+}
+
+/* Arrastar na horizontal gira a garrafa; na vertical continua rolando a página */
+.hero-canvas {
+  touch-action: pan-y;
+}
+
 .hero-subtitulo,
 .hero-rolar {
   font-size: var(--fs-pequeno);

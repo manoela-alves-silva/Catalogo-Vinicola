@@ -2,6 +2,7 @@
 import { iniciarRolagem } from './rolagem.js';
 import { iniciarTextos } from './textos.js';
 import { iniciarVisita } from './visita.js';
+import { acompanharMouse } from './mouse.js';
 
 /**
  * O nome da vinícola é escrito uma vez só, no <h1 id="nome-vinicola"> do hero.
@@ -79,7 +80,8 @@ async function iniciar() {
   // 5. Espera as fontes: o SplitText mede as linhas, e a fonte errada daria linhas erradas
   await document.fonts.ready;
 
-  // 6. Animações
+  // 6. Animações (o mouse é lido pelo nome do hero e pela garrafa)
+  if (!movimentoReduzido) acompanharMouse();
   iniciarTextos({ movimentoReduzido });
   iniciarVisita({ movimentoReduzido });
 
