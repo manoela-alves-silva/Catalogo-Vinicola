@@ -113,6 +113,7 @@ export async function iniciarCatalogo({ animar, lenis }) {
 
   const carregou = await carregar();
   if (carregou && animar) ativarRolagemHorizontal({ secao, lista, lenis });
+  return painel; // a harmonização reaproveita o mesmo painel
 }
 
 /**

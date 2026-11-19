@@ -6,6 +6,7 @@ import { acompanharMouse } from './mouse.js';
 import { atualizarLinksWhatsApp } from './contato.js';
 import { iniciarCatalogo } from './catalogo.js';
 import { iniciarVinhedo } from './vinhedo.js';
+import { iniciarHarmonizacao } from './harmonizacao.js';
 
 /**
  * O nome da vinícola é escrito uma vez só, no <h1 id="nome-vinicola"> do hero.
@@ -72,7 +73,7 @@ async function iniciar() {
   // Se o CDN falhar, o site fica sem animações, mas inteiro: o catálogo ainda carrega da API
   if (!window.gsap || !window.ScrollTrigger || !window.SplitText) {
     console.warn('GSAP não carregou: site sem animações.');
-    iniciarCatalogo({ animar: false, movimentoReduzido, lenis: null });
+    iniciarCatalogo({ animar: false, lenis: null }).then((painel) => iniciarHarmonizacao({ animar: false, painel }));
     return;
   }
 
@@ -96,7 +97,8 @@ async function iniciar() {
   iniciarVinhedo({ movimentoReduzido }); // voo pelas fotos das etapas
 
   // 8. Catálogo depois do vinhedo: o pin dele vem depois do pin do vinhedo na página
-  await iniciarCatalogo({ animar: !movimentoReduzido, movimentoReduzido, lenis });
+  const painel = await iniciarCatalogo({ animar: !movimentoReduzido, lenis });
+  iniciarHarmonizacao({ animar: !movimentoReduzido, painel });
 
   // 9. Recalcula posições de todos os gatilhos com o layout final.
   //    sort() põe os gatilhos na ordem da página: o pin do vinhedo "empurra" o que vem

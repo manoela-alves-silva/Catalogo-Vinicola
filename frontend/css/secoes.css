@@ -45,6 +45,58 @@
   color: var(--cor-texto-suave);
 }
 
+/* Sugestões da harmonização (criadas por js/harmonizacao.js) */
+.harmonizacao-contagem {
+  margin: 0 auto var(--espaco-m);
+  color: var(--cor-vinho-claro);
+}
+
+.sugestoes {
+  display: grid;
+  gap: var(--espaco-s);
+  width: 100%;
+  text-align: left;
+}
+
+.sugestao {
+  display: flex;
+  align-items: center;
+  gap: var(--espaco-s);
+  padding: var(--espaco-xs);
+  border: 1px solid var(--cor-linha);
+  border-radius: var(--raio-card);
+  background-color: var(--cor-fundo-elevado);
+}
+
+.sugestao-foto {
+  width: 5rem;
+  height: 6rem;
+  object-fit: cover;
+  border-radius: calc(var(--raio-card) - 1px);
+}
+
+.sugestao-tipo,
+.sugestao-prato {
+  font-size: var(--fs-pequeno);
+  color: var(--cor-texto-suave);
+}
+
+.sugestao-nome {
+  font-size: 1.25rem;
+}
+
+.sugestao-nome button {
+  padding: 0;
+  text-align: left;
+  text-transform: inherit;
+}
+
+@media (min-width: 48em) {
+  .sugestoes {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 /* ---------- Visite ---------- */
 .visite {
   overflow-x: clip;
