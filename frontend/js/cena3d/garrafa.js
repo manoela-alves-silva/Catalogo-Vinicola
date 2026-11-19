@@ -1,5 +1,6 @@
 // Garrafa 3D feita com LatheGeometry, com cor do líquido e rótulo trocáveis.
 import * as THREE from 'three';
+import { desenharRotulo } from './rotulo.js';
 
 const ALTURA_TOTAL = 3.1;
 
@@ -62,53 +63,6 @@ function fatiarPerfil(perfil, yMin, yMax, ajustarRaio) {
     new THREE.Vector2(ajustarRaio(raioEm(yMax)), yMax),
     new THREE.Vector2(0, yMax),
   ];
-}
-
-/** Texto escuro em rótulo claro e vice-versa. */
-function corDoTexto(corFundo) {
-  const { r, g, b } = new THREE.Color(corFundo);
-  return 0.2126 * r + 0.7152 * g + 0.0722 * b > 0.45 ? '#14201A' : '#EDE6D8';
-}
-
-/** Desenha o rótulo num <canvas> 2D, que vira a textura do cilindro. */
-function desenharRotulo(canvas, { corRotulo, titulo, subtitulo }) {
-  const ctx = canvas.getContext('2d');
-  const { width: L, height: A } = canvas;
-  const corTexto = corDoTexto(corRotulo);
-  const centro = L / 2; // o meio da textura fica de frente para a câmera
-
-  ctx.fillStyle = corRotulo;
-  ctx.fillRect(0, 0, L, A);
-
-  // filetes finos em cima e embaixo
-  ctx.fillStyle = corTexto;
-  ctx.globalAlpha = 0.6;
-  ctx.fillRect(0, A * 0.1, L, 3);
-  ctx.fillRect(0, A * 0.9 - 3, L, 3);
-  ctx.globalAlpha = 1;
-
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-
-  // título: ajusta o tamanho para caber na parte da frente (~1/6 da volta)
-  const larguraMaxima = L * 0.16;
-  let tamanho = 120;
-  ctx.font = `600 ${tamanho}px "Clash Display", sans-serif`;
-  const linhas = titulo.toUpperCase().split(' ');
-  const maiorLinha = Math.max(...linhas.map((linha) => ctx.measureText(linha).width));
-  tamanho = Math.min(tamanho, (tamanho * larguraMaxima) / maiorLinha);
-  ctx.font = `600 ${tamanho}px "Clash Display", sans-serif`;
-  linhas.forEach((linha, i) => {
-    const y = A * 0.47 + (i - (linhas.length - 1) / 2) * tamanho * 0.95;
-    ctx.fillText(linha, centro, y);
-  });
-
-  ctx.font = `500 ${Math.round(A * 0.055)}px "General Sans", sans-serif`;
-  ctx.globalAlpha = 0.75;
-  ctx.letterSpacing = '6px'; // navegadores sem suporte simplesmente ignoram
-  ctx.fillText(subtitulo.toUpperCase(), centro, A * 0.8);
-  ctx.letterSpacing = '0px';
-  ctx.globalAlpha = 1;
 }
 
 /**

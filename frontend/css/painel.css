@@ -1,0 +1,135 @@
+/* Painel lateral com a ficha do vinho. Escondido por padrão: o JS coloca a classe "aberto".
+   (As transições de abrir/fechar ficam em animacoes.css.) */
+
+.painel-fundo {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-painel);
+  background-color: rgb(14 21 18 / 0.7);
+  opacity: 0;
+  visibility: hidden;
+}
+
+.painel-vinho {
+  position: fixed;
+  inset: 0 0 0 auto;
+  z-index: var(--z-painel);
+  width: min(100%, 34rem);
+  height: 100dvh;
+  overflow-y: auto;
+  overscroll-behavior: contain; /* rolar o painel não rola a página atrás */
+  padding: max(var(--espaco-m), env(safe-area-inset-top)) var(--espaco-m)
+    max(var(--espaco-l), env(safe-area-inset-bottom));
+  background-color: var(--cor-fundo-elevado);
+  border-left: 1px solid var(--cor-linha);
+  /* fora da tela e invisível também para leitores de tela */
+  transform: translateX(100%);
+  visibility: hidden;
+}
+
+.painel-vinho.aberto {
+  transform: none;
+  visibility: visible;
+}
+
+/* O fundo escuro reage sozinho ao painel aberto, via :has() */
+.painel-fundo:has(+ .painel-vinho.aberto) {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Botão "×" grudado no topo: continua à mão mesmo rolando a ficha */
+.painel-vinho-fechar {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  margin-left: auto;
+  border: 1px solid var(--cor-linha);
+  border-radius: 50%;
+  background-color: var(--cor-fundo-elevado);
+}
+
+@media (hover: hover) {
+  .painel-vinho-fechar:hover {
+    border-color: var(--cor-creme);
+  }
+}
+
+.painel-vinho-foto {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  object-fit: cover;
+  object-position: 50% 45%;
+  margin: calc(-2.75rem - var(--espaco-xs)) 0 var(--espaco-m); /* sobe por baixo do "×" */
+  border-radius: var(--raio-card);
+}
+
+.painel-vinho-tipo {
+  font-size: var(--fs-pequeno);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--cor-vinho-claro);
+}
+
+.painel-vinho-nome {
+  margin: var(--espaco-xs) 0 var(--espaco-s);
+  font-size: clamp(2rem, 1.5rem + 2vw, 3rem);
+}
+
+.painel-vinho-descricao,
+.painel-vinho-notas,
+.painel-vinho-pratos {
+  color: var(--cor-texto-suave);
+}
+
+.painel-vinho-preco {
+  margin-top: var(--espaco-s);
+  font-family: var(--fonte-titulo);
+  font-size: 1.5rem;
+}
+
+.painel-vinho-ficha {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--espaco-xs) var(--espaco-m);
+  margin: var(--espaco-m) 0;
+  padding-block: var(--espaco-s);
+  border-block: 1px solid var(--cor-linha);
+  font-size: var(--fs-pequeno);
+}
+
+.painel-vinho-ficha dt {
+  color: var(--cor-texto-suave);
+}
+
+.painel-vinho-ficha dd {
+  margin: 0;
+}
+
+.painel-vinho-subtitulo {
+  margin-bottom: var(--espaco-xs);
+  font-size: 1.125rem;
+}
+
+.painel-vinho-notas {
+  margin-bottom: var(--espaco-m);
+}
+
+.painel-vinho-pratos {
+  margin-bottom: var(--espaco-m);
+}
+
+.painel-vinho-pratos li::before {
+  content: '— ';
+  color: var(--cor-vinho-claro);
+}
+
+/* Sem JS de rolagem suave (movimento reduzido): trava a página atrás do painel */
+.sem-rolagem {
+  overflow: hidden;
+}

@@ -1,18 +1,12 @@
 /* Seção "Do vinhedo à taça".
-   Sem 3D (sem JS, sem WebGL ou com movimento reduzido): lista das 6 etapas com imagem.
-   Com 3D (classe .em-cena, colocada pelo JS): a seção vira uma "tela de cinema" presa,
-   com a cena ao fundo, a etapa atual em baixo e a barra de progresso. */
+   Padrão (sem JS ou com movimento reduzido): lista das 6 etapas, cada uma com sua foto.
+   Com JS (classe .em-cena, colocada pelo js/vinhedo.js): a seção vira uma "tela de cinema"
+   presa, com as fotos empilhadas ao fundo, a etapa atual em baixo e a barra de progresso. */
 
 /* ---------- Lista (estado padrão) ---------- */
-.vinhedo:not(.em-cena) .vinhedo-canvas {
-  display: none; /* sem a cena 3D, o canvas vazio não tem o que fazer */
-}
-
-.vinhedo-imagem {
-  width: 100%;
-  height: auto;
-  margin-bottom: var(--espaco-l);
-  border-radius: var(--raio-card);
+.vinhedo-cenario,
+.vinhedo-contador {
+  display: none; /* só fazem sentido com o voo rodando */
 }
 
 .vinhedo-progresso {
@@ -23,14 +17,10 @@
 
 .vinhedo-progresso-barra {
   display: block;
-  width: 100%; /* sem JS, a barra aparece cheia; o JS controla depois */
+  width: 100%; /* sem JS, a barra aparece cheia */
   height: 100%;
   background-color: var(--cor-vinho-claro);
   transform-origin: left;
-}
-
-.vinhedo-contador {
-  display: none; /* só faz sentido com a cena andando */
 }
 
 .vinhedo-etapas {
@@ -38,17 +28,31 @@
   gap: var(--espaco-l) var(--espaco-m);
 }
 
-.vinhedo-etapa {
-  padding-top: var(--espaco-s);
-  border-top: 1px solid var(--cor-linha);
+.vinhedo-etapa-foto {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  margin-bottom: var(--espaco-s);
+  border-radius: var(--raio-card);
 }
 
-/* Número da etapa ("01", "02"...) vindo do atributo data-etapa */
-.vinhedo-etapa::before {
-  content: '0' attr(data-etapa);
+/* Número da etapa ("01", "02"...): um contador CSS que soma 1 a cada <li> */
+.vinhedo-etapas {
+  counter-reset: etapa;
+}
+
+.vinhedo-etapa {
+  counter-increment: etapa;
+}
+
+.vinhedo-etapa h3::before {
+  content: '0' counter(etapa);
   display: block;
-  margin-bottom: var(--espaco-s);
+  margin-bottom: var(--espaco-xs);
+  font-family: var(--fonte-texto);
   font-size: var(--fs-pequeno);
+  font-weight: 500;
   color: var(--cor-vinho-claro);
 }
 
@@ -72,11 +76,11 @@
   }
 }
 
-/* ---------- Cena 3D (.em-cena) ---------- */
+/* ---------- Voo entre as fotos (.em-cena) ---------- */
 .vinhedo.em-cena {
   display: grid;
   grid-template-columns: 1fr auto;
-  grid-template-rows: auto 1fr auto auto; /* título | (cena livre) | etapa + contador | barra */
+  grid-template-rows: auto 1fr auto auto; /* título | (foto livre) | etapa + contador | barra */
   height: 100vh;
   height: 100svh;
   padding-top: calc(var(--altura-cabecalho) + var(--espaco-s));
@@ -84,24 +88,55 @@
   overflow: clip;
 }
 
-/* Escurece o topo e a base para o texto creme ser legível sobre o céu claro.
-   ::after com z-index -1 fica acima do canvas (também -1, mas vem antes) e abaixo do texto. */
+/* O cenário passa um pouco das bordas: ao andar com o mouse, nunca aparece a beirada */
+.vinhedo.em-cena .vinhedo-cenario {
+  display: block;
+  position: absolute;
+  inset: -40px;
+  z-index: var(--z-fundo);
+  background-color: var(--cor-fundo);
+}
+
+.vinhedo-cena {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  will-change: transform, opacity;
+}
+
+/* Névoa: duas manchas claras que derivam devagar e andam mais que a foto com o mouse.
+   O elemento é movido pelo GSAP (mouse); a deriva fica no ::before, porque uma animação
+   CSS no mesmo elemento venceria o transform do GSAP. */
+.vinhedo-nevoa {
+  position: absolute;
+  inset: -10%;
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+.vinhedo-nevoa::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 40% 25% at 25% 70%, rgb(237 230 216 / 0.16), transparent 70%),
+    radial-gradient(ellipse 35% 20% at 75% 60%, rgb(237 230 216 / 0.12), transparent 70%);
+  animation: nevoa-deriva 18s ease-in-out infinite alternate;
+}
+
+/* Escurece topo e base para o texto creme ser legível sobre qualquer foto.
+   ::after com z-index -1 fica acima do cenário (também -1, mas vem antes) e abaixo do texto. */
 .vinhedo.em-cena::after {
   content: '';
   position: absolute;
   inset: 0;
   z-index: var(--z-fundo);
   pointer-events: none;
-  background: linear-gradient(
-    rgb(14 21 18 / 0.75),
-    rgb(14 21 18 / 0) 28%,
-    rgb(14 21 18 / 0) 50%,
-    rgb(14 21 18 / 0.85)
-  );
-}
-
-.vinhedo.em-cena .vinhedo-imagem {
-  display: none;
+  background:
+    linear-gradient(rgb(14 21 18 / 0.7), rgb(14 21 18 / 0) 26%, rgb(14 21 18 / 0) 48%, rgb(14 21 18 / 0.88)),
+    radial-gradient(ellipse at center, transparent 55%, rgb(14 21 18 / 0.45)); /* vinheta */
 }
 
 .vinhedo.em-cena .titulo-secao {
@@ -123,8 +158,10 @@
   left: 0;
   bottom: 0;
   max-width: min(40rem, 100%);
-  padding: 0;
-  border: 0;
+}
+
+.vinhedo.em-cena .vinhedo-etapa-foto {
+  display: none; /* no voo, a foto está no cenário ao fundo */
 }
 
 /* Tamanho pensado para "ENGARRAFAMENTO" (a palavra mais longa) caber inteira numa linha */
@@ -158,6 +195,7 @@
   grid-column: 1 / -1;
   height: 3px;
   margin: var(--espaco-m) 0 0;
+  background-color: rgb(237 230 216 / 0.2);
   mask: repeating-linear-gradient(90deg, #000 0 calc(100% / 6 - 4px), transparent 0 calc(100% / 6));
 }
 

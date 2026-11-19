@@ -26,6 +26,31 @@ html.lenis body {
   will-change: transform; /* avisa o navegador: esse elemento vai se mover o tempo todo */
 }
 
+/* ---------- Névoa do vinhedo ---------- */
+@keyframes nevoa-deriva {
+  from { transform: translate3d(-3%, 0, 0); }
+  to { transform: translate3d(3%, -2%, 0); }
+}
+
+/* ---------- Painel do vinho ---------- */
+/* Ao fechar, o "visibility" só muda DEPOIS da animação (atraso de 0,7 s); senão o
+   painel sumiria de uma vez. Ao abrir, ele fica visível na hora e desliza. */
+.painel-vinho {
+  transition: transform 0.7s cubic-bezier(0.7, 0, 0.2, 1), visibility 0s linear 0.7s;
+}
+
+.painel-vinho.aberto {
+  transition: transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0s;
+}
+
+.painel-fundo {
+  transition: opacity 0.5s ease, visibility 0s linear 0.5s;
+}
+
+.painel-fundo:has(+ .painel-vinho.aberto) {
+  transition: opacity 0.5s ease, visibility 0s;
+}
+
 /* ---------- Movimento reduzido ---------- */
 /* Quem pediu menos movimento no sistema operacional vê tudo parado e direto.
    (O JS também confere essa preferência e nem cria as animações.) */

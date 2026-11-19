@@ -3,6 +3,9 @@ import { iniciarRolagem } from './rolagem.js';
 import { iniciarTextos } from './textos.js';
 import { iniciarVisita } from './visita.js';
 import { acompanharMouse } from './mouse.js';
+import { atualizarLinksWhatsApp } from './contato.js';
+import { iniciarCatalogo } from './catalogo.js';
+import { iniciarVinhedo } from './vinhedo.js';
 
 /**
  * O nome da vinícola é escrito uma vez só, no <h1 id="nome-vinicola"> do hero.
@@ -58,44 +61,26 @@ async function iniciarGarrafaHero({ movimentoReduzido }) {
   }
 }
 
-/**
- * Cena 3D "Do vinhedo à taça". Com movimento reduzido ou sem WebGL, a seção
- * continua como está no HTML: a lista das 6 etapas com uma imagem estática.
- */
-async function iniciarVinhedo({ movimentoReduzido }) {
-  const secao = document.querySelector('#vinhedo');
-  const canvas = secao?.querySelector('#canvas-vinhedo');
-  if (!canvas || movimentoReduzido) return;
-
-  try {
-    const { suportaWebGL, detectarQualidade } = await import('./cena3d/qualidade.js');
-    if (!suportaWebGL()) return;
-    const { iniciarCenaVinhedo } = await import('./cena3d/cenaVinhedo.js');
-    iniciarCenaVinhedo({ secao, canvas, qualidade: detectarQualidade() });
-  } catch (erro) {
-    console.warn('Vinhedo 3D indisponível, mantendo a lista das etapas.', erro);
-    secao.classList.remove('em-cena');
-  }
-}
-
 async function iniciar() {
   // 1. Conteúdo: funciona mesmo sem as bibliotecas
   preencherNomeVinicola();
-
-  // Se o CDN falhar, o site fica estático, mas inteiro e legível
-  if (!window.gsap || !window.ScrollTrigger || !window.SplitText) {
-    console.warn('GSAP não carregou: site sem animações.');
-    return;
-  }
+  atualizarLinksWhatsApp();
 
   // 2. Preferência do sistema: menos movimento
   const movimentoReduzido = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+  // Se o CDN falhar, o site fica sem animações, mas inteiro: o catálogo ainda carrega da API
+  if (!window.gsap || !window.ScrollTrigger || !window.SplitText) {
+    console.warn('GSAP não carregou: site sem animações.');
+    iniciarCatalogo({ animar: false, movimentoReduzido, lenis: null });
+    return;
+  }
+
   // 3. Plugins registrados antes de qualquer animação
-  gsap.registerPlugin(ScrollTrigger, SplitText);
+  gsap.registerPlugin(ScrollTrigger, SplitText, ...(window.Flip ? [Flip] : []));
 
   // 4. Rolagem primeiro: os ScrollTriggers criados depois já nascem sincronizados com o Lenis
-  if (window.Lenis) iniciarRolagem({ movimentoReduzido });
+  const lenis = window.Lenis ? iniciarRolagem({ movimentoReduzido }) : null;
 
   // 5. Espera as fontes: o SplitText mede as linhas, e a fonte errada daria linhas erradas
   await document.fonts.ready;
@@ -108,9 +93,12 @@ async function iniciar() {
   // 7. 3D por último: é o mais pesado e não deve atrasar os textos.
   //    (Depois das fontes também porque o rótulo usa a Clash Display.)
   await iniciarGarrafaHero({ movimentoReduzido });
-  await iniciarVinhedo({ movimentoReduzido });
+  iniciarVinhedo({ movimentoReduzido }); // voo pelas fotos das etapas
 
-  // 8. Recalcula posições de todos os gatilhos com o layout final.
+  // 8. Catálogo depois do vinhedo: o pin dele vem depois do pin do vinhedo na página
+  await iniciarCatalogo({ animar: !movimentoReduzido, movimentoReduzido, lenis });
+
+  // 9. Recalcula posições de todos os gatilhos com o layout final.
   //    sort() põe os gatilhos na ordem da página: o pin do vinhedo "empurra" o que vem
   //    abaixo dele, então quem está depois precisa ser calculado depois.
   ScrollTrigger.sort();
