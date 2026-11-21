@@ -1,4 +1,4 @@
-/* Estrutura geral: regra comum das seções, preloader, cabeçalho e rodapé.
+/* Estrutura geral: regra comum das seções, preloader e rodapé.
    Mobile-first: a base é o celular; as media queries só acrescentam. */
 
 /* ---------- Seções (regra comum) ---------- */
@@ -52,78 +52,27 @@ main > section {
   background-color: var(--cor-fundo);
 }
 
-/* ---------- Cabeçalho fixo e discreto ---------- */
-.cabecalho {
-  position: fixed;
-  inset: 0 0 auto;
-  z-index: var(--z-cabecalho);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--espaco-s);
-  min-height: var(--altura-cabecalho);
-  padding: env(safe-area-inset-top) max(var(--margem-lateral), env(safe-area-inset-right)) 0
-    max(var(--margem-lateral), env(safe-area-inset-left));
-  background: linear-gradient(var(--cor-fundo), rgb(14 21 18 / 0));
-  font-size: var(--fs-pequeno);
+.preloader-taca {
+  width: clamp(3rem, 2.5rem + 2vw, 4.5rem);
+  height: auto;
+  color: var(--cor-creme);
+  overflow: visible;
 }
 
-.cabecalho-logo {
+/* O líquido cresce de baixo para cima: o JS anima o scaleY de 0 a 1 */
+.taca-liquido {
+  fill: var(--cor-vinho);
+  transform: scaleY(0);
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+}
+
+.preloader-contador {
   font-family: var(--fonte-titulo);
-  font-size: 1.125rem;
-  font-weight: 600;
-  text-transform: uppercase;
+  font-size: var(--fs-h3);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums; /* números com a mesma largura: o contador não "treme" */
   letter-spacing: 0.04em;
-  white-space: nowrap;
-}
-
-/* Em telas bem estreitas (< 360px) o botão mostra só o ícone.
-   O texto continua lá para leitores de tela, só some visualmente. */
-.cabecalho-whatsapp {
-  padding-inline: 0.85em;
-}
-
-.cabecalho-whatsapp-texto {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
-}
-
-@media (min-width: 22.5em) {
-  .cabecalho-whatsapp {
-    padding-inline: 1.4em;
-  }
-
-  .cabecalho-whatsapp-texto {
-    position: static;
-    width: auto;
-    height: auto;
-    clip-path: none;
-  }
-}
-
-/* No celular o menu fica escondido; o botão só aparece quando o JS existir (Etapa 8/9). */
-.menu-principal,
-.cabecalho-menu-botao {
-  display: none;
-}
-
-.js .cabecalho-menu-botao {
-  display: block;
-}
-
-.menu-principal ul {
-  display: flex;
-  gap: var(--espaco-m);
-}
-
-@media (hover: hover) {
-  .menu-principal a:hover {
-    color: var(--cor-vinho-claro);
-  }
 }
 
 /* ---------- Rodapé ---------- */
@@ -166,15 +115,5 @@ main > section {
 @media (min-width: 48em) {
   .rodape-colunas {
     grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-@media (min-width: 64em) {
-  .menu-principal {
-    display: block;
-  }
-
-  .js .cabecalho-menu-botao {
-    display: none;
   }
 }

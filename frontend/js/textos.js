@@ -14,20 +14,23 @@ import { mouse } from './mouse.js';
  */
 function animarNomeHero() {
   const titulo = document.querySelector('#nome-vinicola');
-  if (!titulo) return;
+  if (!titulo) return null;
 
   const palavraColorida = titulo.querySelector('span:last-child:not(:first-child)');
   const creme = getComputedStyle(document.documentElement).getPropertyValue('--cor-creme').trim();
 
+  // Criada pausada: quem dá o "play" é o preloader, quando a cortina começa a subir
+  const entrada = gsap.timeline({ paused: true, delay: 0.4 });
   SplitText.create(titulo, {
     type: 'words',
     mask: 'words',     // cada palavra ganha uma "janela" que esconde o que está fora dela
     onSplit: (divisao) =>
-      gsap.timeline({ delay: 0.4 })
+      entrada
         .from(divisao.words, { yPercent: 110, duration: 1.2, ease: 'expo.out', stagger: 0.15 })
         // a última palavra nasce creme e "tinge" de vinho (a cor final vem do CSS)
         .from(palavraColorida, { color: creme, duration: 1.4, ease: 'power2.inOut' }, '-=0.5'),
   });
+  return entrada;
 }
 
 /**
@@ -129,12 +132,17 @@ function animarManifesto() {
   });
 }
 
+/**
+ * Prepara todas as animações de texto.
+ * @returns {{ revelarHero: () => void }}  toca a entrada do nome do hero (chamada pelo preloader)
+ */
 export function iniciarTextos({ movimentoReduzido }) {
   // Com movimento reduzido, nada é dividido nem escondido: o texto aparece direto
-  if (movimentoReduzido) return;
+  if (movimentoReduzido) return { revelarHero() {} };
 
-  animarNomeHero();
+  const entradaHero = animarNomeHero();
   animarNomeVivo();
   animarTitulos();
   animarManifesto();
+  return { revelarHero: () => entradaHero?.play() };
 }

@@ -71,6 +71,20 @@ export async function iniciarCatalogo({ animar, lenis }) {
 
   let pedidoAtual = 0;     // para ignorar respostas antigas (cliques rápidos em vários filtros)
   let animacaoFlip = null; // animação de filtro em andamento
+  let gatilhoHorizontal = () => null; // rolagem horizontal do desktop (preenchido no fim)
+
+  /**
+   * Depois de filtrar, a fileira muda de largura e a seção presa fica mais curta ou mais longa.
+   * Se a pessoa estava no meio dela, a posição antiga poderia cair DEPOIS do fim da seção
+   * (e ela iria parar na harmonização). Por isso voltamos para o início do catálogo.
+   */
+  function recalcularRolagem() {
+    window.ScrollTrigger?.refresh(); // "window." evita erro se o GSAP nem carregou
+    const gatilho = gatilhoHorizontal();
+    if (!gatilho || gatilho.scroll() <= gatilho.start) return;
+    if (lenis) lenis.scrollTo(gatilho.start, { immediate: true });
+    else window.scrollTo(0, gatilho.start);
+  }
 
   /** Filtro: pergunta à API quais vinhos são daquele tipo e mostra só esses. */
   async function filtrar(botao) {
@@ -96,7 +110,7 @@ export async function iniciarCatalogo({ animar, lenis }) {
     anunciar(slugs.size, tipo);
 
     if (!usarFlip) {
-      window.ScrollTrigger?.refresh(); // "window." evita erro se o GSAP nem carregou
+      recalcularRolagem();
       return;
     }
     animacaoFlip = Flip.from(antes, {
@@ -105,14 +119,14 @@ export async function iniciarCatalogo({ animar, lenis }) {
       absolute: true, // durante a animação os cards "flutuam", sem empurrar uns aos outros
       onEnter: (entrando) => gsap.fromTo(entrando, { opacity: 0, scale: 0.85 }, { opacity: 1, scale: 1, duration: 0.6, delay: 0.2 }),
       onLeave: (saindo) => gsap.to(saindo, { opacity: 0, scale: 0.85, duration: 0.4 }),
-      onComplete: () => ScrollTrigger.refresh(), // a fileira mudou de largura: recalcula a rolagem
+      onComplete: recalcularRolagem, // a fileira mudou de largura: recalcula a rolagem
     });
   }
 
   filtros.forEach((botao) => botao.addEventListener('click', () => filtrar(botao)));
 
   const carregou = await carregar();
-  if (carregou && animar) ativarRolagemHorizontal({ secao, lista, lenis });
+  if (carregou && animar) gatilhoHorizontal = ativarRolagemHorizontal({ secao, lista, lenis });
   return painel; // a harmonização reaproveita o mesmo painel
 }
 
@@ -120,9 +134,11 @@ export async function iniciarCatalogo({ animar, lenis }) {
  * Desktop: a seção fica presa e a rolagem vertical anda com os cards na horizontal.
  * No celular (ou com movimento reduzido) nada disso roda e a lista fica vertical (CSS).
  * gsap.matchMedia cria/desfaz tudo sozinho quando a tela passa do limite.
+ * Devolve uma função que informa o ScrollTrigger atual (ou null fora do desktop).
  */
 function ativarRolagemHorizontal({ secao, lista, lenis }) {
   const distancia = () => Math.max(0, lista.scrollWidth - lista.clientWidth);
+  let gatilhoAtual = null;
 
   gsap.matchMedia().add('(min-width: 64em)', () => {
     secao.classList.add('horizontal');
@@ -151,12 +167,15 @@ function ativarRolagemHorizontal({ secao, lista, lenis }) {
       else window.scrollTo(0, destino);
     };
     lista.addEventListener('focusin', trazerParaATela);
+    gatilhoAtual = andar.scrollTrigger;
     ScrollTrigger.sort();
     ScrollTrigger.refresh();
 
     return () => { // ao sair do desktop: desfaz tudo
       secao.classList.remove('horizontal');
       lista.removeEventListener('focusin', trazerParaATela);
+      gatilhoAtual = null;
     };
   });
+  return () => gatilhoAtual;
 }

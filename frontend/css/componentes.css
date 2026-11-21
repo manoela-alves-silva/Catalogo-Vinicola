@@ -86,6 +86,98 @@
   }
 }
 
+/* ---------- Cursor personalizado (criado pelo cursor.js, só com mouse) ---------- */
+/* A seta do sistema some só quando o cursor do site existe. O !important vence o
+   "grab" que o JS da garrafa coloca direto no canvas. */
+.cursor-personalizado,
+.cursor-personalizado * {
+  cursor: none !important;
+}
+
+.cursor {
+  position: fixed;
+  inset: 0 auto auto 0;
+  z-index: var(--z-cursor);
+  pointer-events: none; /* o cursor nunca "rouba" o clique */
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.cursor.visivel {
+  opacity: 1;
+}
+
+/* Ponto e anel: o JS move os dois com transform (x/y); o centro fica em cima do mouse */
+.cursor-ponto,
+.cursor-anel {
+  position: absolute;
+  inset: 0 auto auto 0;
+}
+
+.cursor-ponto::before {
+  content: '';
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  translate: -50% -50%;
+  border-radius: 50%;
+  background-color: var(--cor-creme);
+  transition: opacity 0.3s ease;
+}
+
+/* A forma do anel cresce com "scale" num elemento interno, para não brigar com o x/y do JS */
+.cursor-anel-forma {
+  position: absolute;
+  width: 2.25rem;
+  height: 2.25rem;
+  translate: -50% -50%;
+  border: 1px solid rgb(237 230 216 / 0.5);
+  border-radius: 50%;
+  transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.cursor.sobre-link .cursor-anel-forma {
+  transform: scale(1.6);
+  border-color: var(--cor-creme);
+}
+
+/* Em cards e na garrafa: círculo cheio cor de vinho com uma palavra no meio */
+.cursor.com-rotulo .cursor-anel-forma {
+  transform: scale(2.6);
+  border-color: transparent;
+  background-color: var(--cor-vinho);
+}
+
+.cursor.com-rotulo .cursor-ponto::before {
+  opacity: 0;
+}
+
+.cursor.pressionado .cursor-anel-forma {
+  transform: scale(0.8);
+}
+
+.cursor.com-rotulo.pressionado .cursor-anel-forma {
+  transform: scale(2.3);
+}
+
+.cursor-rotulo {
+  position: absolute;
+  translate: -50% -50%;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--cor-creme);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.cursor.com-rotulo .cursor-rotulo {
+  opacity: 1;
+  transition-delay: 0.1s;
+}
+
 /* ---------- Faixa de texto (marquee) ---------- */
 .marquee {
   margin-inline: calc(50% - 50vw); /* sai do padding da seção e vai de borda a borda da tela */

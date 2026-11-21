@@ -9,6 +9,9 @@
 
   <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
 
+  <!-- Marca o <html> com a classe "js" antes da primeira pintura (ver o arquivo). -->
+  <script src="js/sinalizarJs.js"></script>
+
   <!-- Fontes do Fontshare: um link por família (a URL combinada só traz a primeira). -->
   <link rel="preconnect" href="https://api.fontshare.com">
   <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
@@ -17,10 +20,12 @@
 
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/cabecalho.css">
   <link rel="stylesheet" href="css/componentes.css">
   <link rel="stylesheet" href="css/hero.css">
   <link rel="stylesheet" href="css/secoes.css">
   <link rel="stylesheet" href="css/vinhedo.css">
+  <link rel="stylesheet" href="css/cardVinho.css">
   <link rel="stylesheet" href="css/catalogo.css">
   <link rel="stylesheet" href="css/painel.css">
   <link rel="stylesheet" href="css/animacoes.css">
@@ -30,8 +35,13 @@
   <!-- ========== PRELOADER ========== -->
   <div id="preloader" class="preloader" aria-hidden="true">
     <svg class="preloader-taca" viewBox="0 0 60 100" width="60" height="100">
-      <path class="taca-contorno" d="M10 5 H50 C50 40 42 52 30 52 C18 52 10 40 10 5 Z M30 52 V90 M16 95 H44" fill="none" stroke="currentColor" stroke-width="2"/>
-      <rect class="taca-liquido" x="10" y="5" width="40" height="47"/>
+      <!-- Formato do bojo: o líquido só aparece dentro dele -->
+      <clipPath id="taca-bojo">
+        <path d="M10 5 H50 C50 40 42 52 30 52 C18 52 10 40 10 5 Z"/>
+      </clipPath>
+      <!-- O líquido começa a 1/3 do bojo (taça de vinho não se enche até a borda) -->
+      <rect class="taca-liquido" x="10" y="20" width="40" height="32" clip-path="url(#taca-bojo)"/>
+      <path class="taca-contorno" d="M10 5 H50 C50 40 42 52 30 52 C18 52 10 40 10 5 Z M30 52 V90 M16 95 H44" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
     </svg>
     <p class="preloader-contador"><span id="preloader-numero">0</span>%</p>
   </div>
@@ -42,7 +52,7 @@
     <a href="#inicio" class="cabecalho-logo" data-nome-vinicola>Início</a>
 
     <button type="button" class="cabecalho-menu-botao" aria-label="Abrir menu" aria-expanded="false" aria-controls="menu-principal">
-      <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M3 8h18M3 16h18" stroke="currentColor" stroke-width="2"/></svg>
+      <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path class="menu-linha" d="M3 8h18" stroke="currentColor" stroke-width="1.5"/><path class="menu-linha" d="M3 16h18" stroke="currentColor" stroke-width="1.5"/></svg>
     </button>
 
     <nav id="menu-principal" class="menu-principal" aria-label="Navegação principal">

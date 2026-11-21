@@ -1,0 +1,166 @@
+/* Cabeçalho fixo: logo, menu (em tela cheia no celular) e botão do WhatsApp. */
+
+/* ---------- Cabeçalho fixo e discreto ---------- */
+.cabecalho {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: var(--z-cabecalho);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espaco-s);
+  min-height: var(--altura-cabecalho);
+  padding: env(safe-area-inset-top) max(var(--margem-lateral), env(safe-area-inset-right)) 0
+    max(var(--margem-lateral), env(safe-area-inset-left));
+  background: linear-gradient(var(--cor-fundo), rgb(14 21 18 / 0));
+  font-size: var(--fs-pequeno);
+}
+
+.cabecalho-logo {
+  font-family: var(--fonte-titulo);
+  font-size: 1.125rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+/* Em telas bem estreitas (< 360px) o botão mostra só o ícone.
+   O texto continua lá para leitores de tela, só some visualmente. */
+.cabecalho-whatsapp {
+  padding-inline: 0.85em;
+}
+
+.cabecalho-whatsapp-texto {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (min-width: 22.5em) {
+  .cabecalho-whatsapp {
+    padding-inline: 1.4em;
+  }
+
+  .cabecalho-whatsapp-texto {
+    position: static;
+    width: auto;
+    height: auto;
+    clip-path: none;
+  }
+}
+
+/* ---------- Menu ---------- */
+/* Sem JS, no celular o menu fica escondido (o site é uma página só: basta rolar).
+   Com JS, aparece o botão que abre o menu em tela cheia. */
+.menu-principal,
+.cabecalho-menu-botao {
+  display: none;
+}
+
+.menu-principal ul {
+  display: flex;
+  gap: var(--espaco-m);
+}
+
+@media (hover: hover) {
+  .menu-principal a:hover {
+    color: var(--cor-vinho-claro);
+  }
+}
+
+/* Logo e botão ficam acima do menu aberto (o botão vira o "×" de fechar) */
+.cabecalho-logo,
+.cabecalho-menu-botao {
+  position: relative;
+  z-index: 2;
+}
+
+.js .cabecalho-menu-botao {
+  order: 1; /* vai para o canto direito, perto do polegar (no HTML ele vem antes do menu) */
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+}
+
+/* As duas linhas do ícone giram e formam um "×" quando o menu abre */
+.menu-linha {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.cabecalho-menu-botao[aria-expanded='true'] .menu-linha:first-child {
+  transform: translateY(4px) rotate(45deg);
+}
+
+.cabecalho-menu-botao[aria-expanded='true'] .menu-linha:last-child {
+  transform: translateY(-4px) rotate(-45deg);
+}
+
+/* Celular e tablet: menu em tela cheia, com os links grandes entrando um a um.
+   (Aqui uso max-width: são regras SÓ do menu aberto, que o desktop não deve herdar.) */
+@media (width < 64em) {
+  .js .menu-principal {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    display: grid;
+    align-content: center;
+    padding-inline: var(--margem-lateral);
+    background-color: var(--cor-fundo);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.4s ease, visibility 0s linear 0.4s;
+  }
+
+  .js .menu-principal ul {
+    flex-direction: column;
+    gap: var(--espaco-xs);
+    padding: 0;
+    list-style: none;
+  }
+
+  .js .menu-principal a {
+    display: inline-block;
+    font-family: var(--fonte-titulo);
+    font-size: clamp(2.5rem, 10vw, 4.5rem);
+    font-weight: 500;
+    line-height: 1.1;
+    text-transform: uppercase;
+    opacity: 0;
+    transform: translateY(1.5rem);
+    transition: opacity 0.5s ease, transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .cabecalho-menu-botao[aria-expanded='true'] ~ .menu-principal {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.4s ease, visibility 0s;
+  }
+
+  .cabecalho-menu-botao[aria-expanded='true'] ~ .menu-principal a {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Cada link entra um pouco depois do anterior */
+  .menu-principal li:nth-child(2) a { transition-delay: 0.05s; }
+  .menu-principal li:nth-child(3) a { transition-delay: 0.1s; }
+  .menu-principal li:nth-child(4) a { transition-delay: 0.15s; }
+}
+
+/* Desktop: menu sempre visível na linha do cabeçalho, sem botão */
+@media (min-width: 64em) {
+  .menu-principal {
+    display: block;
+  }
+
+  .js .cabecalho-menu-botao {
+    display: none;
+  }
+}

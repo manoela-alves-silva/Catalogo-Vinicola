@@ -21,6 +21,20 @@ html.lenis body {
   overscroll-behavior: contain;
 }
 
+/* ---------- Preloader: saída de segurança ---------- */
+/* Normalmente o JS tira o preloader em poucos segundos. Se o JS quebrar no meio do
+   caminho, esta animação some com ele sozinha depois de 10 s: o site nunca fica preso. */
+@keyframes preloader-seguranca {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+.js .preloader {
+  animation: preloader-seguranca 0.6s ease 10s forwards;
+}
+
 /* ---------- Faixa de texto ---------- */
 .marquee-trilho {
   will-change: transform; /* avisa o navegador: esse elemento vai se mover o tempo todo */

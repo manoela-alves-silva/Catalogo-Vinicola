@@ -127,9 +127,13 @@ export function iniciarCenaHero({ canvas, qualidade, movimentoReduzido, corFundo
   });
 
   // ---------- Entrada: a garrafa sobe suavemente, o canvas aparece e depois a ficha ----------
-  gsap.from(inclinacao.position, { y: -1.2, duration: 1.8, ease: 'expo.out', delay: 0.3 });
-  gsap.from(canvas, { opacity: 0, duration: 1.2, delay: 0.3 });
-  if (ficha) gsap.from(ficha.querySelectorAll('.hero-anotacao'), { opacity: 0, duration: 1, stagger: 0.15, delay: 1.6 });
+  // Fica pausada até o preloader sair da frente (o main.js chama revelar()).
+  // Com movimento reduzido não há entrada: sem o loop, a garrafa ficaria parada lá embaixo.
+  if (movimentoReduzido) return { revelar() {} };
+  const entrada = gsap.timeline({ paused: true, delay: 0.3 })
+    .from(inclinacao.position, { y: -1.2, duration: 1.8, ease: 'expo.out' }, 0)
+    .from(canvas, { opacity: 0, duration: 1.2 }, 0);
+  if (ficha) entrada.from(ficha.querySelectorAll('.hero-anotacao'), { opacity: 0, duration: 1, stagger: 0.15 }, 1.3);
 
   // ---------- Rolagem: enquanto o hero sai da tela, a garrafa sobe e diminui ----------
   const saida = gsap.timeline({
@@ -144,5 +148,5 @@ export function iniciarCenaHero({ canvas, qualidade, movimentoReduzido, corFundo
     .to(subida.scale, { x: 0.6, y: 0.6, z: 0.6, ease: 'none' }, 0);
   if (ficha) saida.to(ficha, { opacity: 0, duration: 0.3, ease: 'none' }, 0); // a ficha some logo no começo
 
-  return r;
+  return { revelar: () => entrada.play() };
 }

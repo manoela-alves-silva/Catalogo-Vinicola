@@ -10,7 +10,8 @@ const PALAVRAS = {
   peixe: ['peixe', 'salmao', 'ceviche', 'tilapia', 'moqueca', 'ostra', 'bacalhau', 'camarao'],
   massa: ['pappardelle', 'risoto', 'nhoque', 'fettuccine', 'pizza', 'massa', 'ragu'],
   queijos: ['queijo', 'brie', 'gorgonzola', 'parmesao', 'grana'],
-  sobremesa: ['sobremesa', 'torta', 'creme', 'pavlova', 'frutas', 'doce', 'chocolate'],
+  // Sem "doce": pegava "Nhoque de batata-doce" e sugeria um tinto para sobremesa
+  sobremesa: ['sobremesa', 'torta', 'creme', 'pavlova', 'frutas', 'chocolate'],
 };
 const NOMES = { carne: 'carne', peixe: 'peixe', massa: 'massa', queijos: 'queijos', sobremesa: 'sobremesa' };
 
@@ -57,9 +58,11 @@ export function iniciarHarmonizacao({ animar, painel }) {
   const botoes = [...secao.querySelectorAll('.prato')];
   const resultado = secao.querySelector('#harmonizacao-resultado');
   let vinhos = null; // carregados só no primeiro clique
+  let ultimoClique = 0; // se chegar um clique novo no meio da transição, o antigo desiste
 
   async function escolher(botao) {
     const categoria = botao.dataset.prato;
+    const esteClique = ++ultimoClique;
     botoes.forEach((b) => b.setAttribute('aria-pressed', String(b === botao)));
 
     try {
@@ -68,6 +71,7 @@ export function iniciarHarmonizacao({ animar, painel }) {
       resultado.replaceChildren(Object.assign(document.createElement('p'), { textContent: erro.message }));
       return;
     }
+    if (esteClique !== ultimoClique) return;
 
     const sugestoes = vinhos
       .map((vinho) => ({ vinho, prato: pratoQueCombina(vinho, categoria) }))
@@ -93,7 +97,9 @@ export function iniciarHarmonizacao({ animar, painel }) {
       return;
     }
     // Transição: o que estava sai para cima, as sugestões novas entram de baixo, uma a uma
+    gsap.killTweensOf(resultado.querySelectorAll('*'));
     await gsap.to(resultado.children, { y: -20, opacity: 0, duration: 0.3, stagger: 0.04 });
+    if (esteClique !== ultimoClique) return;
     resultado.replaceChildren(...conteudo);
     gsap.from(resultado.querySelectorAll('.harmonizacao-contagem, .sugestao'), {
       y: 40, opacity: 0, duration: 0.7, stagger: 0.08, ease: 'power3.out',

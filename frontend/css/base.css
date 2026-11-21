@@ -38,6 +38,7 @@
   --z-cabecalho: 10;
   --z-painel: 20;
   --z-preloader: 30;
+  --z-cursor: 40;     /* acima de tudo, inclusive do painel */
 
   --raio: 999px;      /* botões em pílula */
   --raio-card: 4px;
