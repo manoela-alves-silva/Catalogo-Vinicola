@@ -1,0 +1,39 @@
+# Publica o front-end no GitHub Pages a cada push na main.
+# O Pages não roda PHP: o site entra em "modo estático" (ver frontend/js/api.js)
+# e lê uma cópia de backend/dados/vinhos.json, feita aqui na hora de publicar.
+name: Publicar no GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v7
+      - name: Monta o site (front-end + dados dos vinhos)
+        run: |
+          mkdir -p _site
+          cp -r frontend/. _site/
+          mkdir -p _site/dados
+          cp backend/dados/vinhos.json _site/dados/vinhos.json
+      - uses: actions/configure-pages@v6
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: _site
+      - id: deploy
+        uses: actions/deploy-pages@v5

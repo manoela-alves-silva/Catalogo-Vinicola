@@ -11,6 +11,12 @@ Feito com **PHP puro** no back-end e **HTML, CSS e JavaScript puros** no front-e
 frameworks, sem npm e sem bundler, organizado do jeito que um projeto profissional seria,
 mas pensado para quem está aprendendo.
 
+🔗 **Veja no ar:** [manoela-alves-silva.github.io/Catalogo-Vinicola](https://manoela-alves-silva.github.io/Catalogo-Vinicola/)
+
+> No GitHub Pages não existe PHP, então a versão no ar roda em **modo estático**: o
+> `frontend/js/api.js` lê o mesmo `vinhos.json` e aplica as mesmas regras da API
+> (filtro por tipo e busca sem acento). No computador, o site continua usando a API PHP.
+
 ![Preloader e hero: a taça enche, a cortina sobe e a garrafa 3D reage ao mouse](docs/gifs/hero.gif)
 
 ---
@@ -41,8 +47,8 @@ A pessoa escolhe o prato e o site sugere os vinhos que combinam.
 Precisa do **PHP 8+** e, para o front-end, do Live Server do VS Code **ou** do Python 3.
 
 ```bash
-git clone https://github.com/manoela-alves-silva/vinicola.git
-cd vinicola
+git clone https://github.com/manoela-alves-silva/Catalogo-Vinicola.git
+cd Catalogo-Vinicola
 
 # 1. API (porta 8000)
 php -S localhost:8000 -t backend/public
